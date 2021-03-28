@@ -111,9 +111,11 @@ class KeyboardInputManager:
         :param additional_duration: additinal delay to be added
         :return: None
         """
+        print('calling')
         self._direct_press(key_code)
         time.sleep(duration+additional_duration)
         self._direct_release(key_code)
+        print('call end')
 
     def translate_key_state(self):
         """
@@ -161,7 +163,7 @@ class KeyboardInputManager:
         self.translate_key_state()
 
 DEFAULT_KEY_MAP = {
-    "jump": [dic.DIK_ALT, "점프"],
+    "jump": [dic.DIK_SPACE, "점프"],
     "moonlight_slash": [dic.DIK_A, "문라이트 슬래쉬"],
     "thousand_sword": [dic.DIK_F, "사우전드 소드"],
     "release_overload": [dic.DIK_Q, "릴리즈 오버로드"],

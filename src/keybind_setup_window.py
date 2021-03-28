@@ -9,7 +9,7 @@ class SetKeyMap(tk.Toplevel):
         tk.Toplevel.__init__(self, master)
         self.wm_minsize(200, 30)
         self.master = master
-        self.title("키설정")
+        self.title("Key setting")
         self.focus_get()
         self.grab_set()
         if not os.path.exists("keymap.keymap"):
@@ -31,12 +31,12 @@ class SetKeyMap(tk.Toplevel):
 
             keycount += 1
 
-        tk.Button(self, text="기본값 복원", command=self.set_default_keymap).grid(row=keycount, column=0)
-        tk.Button(self, text="저장하고 종료", command=self.onSave).grid(row=keycount, column=1)
+        tk.Button(self, text="Restore defaults", command=self.set_default_keymap).grid(row=keycount, column=0)
+        tk.Button(self, text="Save and exit", command=self.onSave).grid(row=keycount, column=1)
 
     def set_default_keymap(self):
         self.create_default_keymap()
-        showinfo("키설정", "기본값으로 복원했습니다")
+        showinfo("Key Settings", "Restored to default values")
         self.destroy()
 
     def keysym2dik(self, keysym):
@@ -60,14 +60,14 @@ class SetKeyMap(tk.Toplevel):
                 found = True
                 break
         if not found:
-            showwarning("키설정", "현재 지원하지 않는 키입니다. 기본 키로 초기화 됩니다."+str(event.keysym))
+            showwarning("Key Settings", "This key is not currently supported. It is initialized to the default key."+str(event.keysym))
             self.keymap_data[key_name] = DEFAULT_KEY_MAP[key_name]
             self.labels[key_name].set(self.dik2keysym(DEFAULT_KEY_MAP[key_name][0]))
 
         self.unbind("<Key>")
 
     def set_key(self, key_name):
-        self.labels[key_name].set("키를 입력해 주세요")
+        self.labels[key_name].set("Please enter your key")
         self.unbind("<Key>")
         self.bind("<Key>", lambda event: self.onPress(event, key_name))
 

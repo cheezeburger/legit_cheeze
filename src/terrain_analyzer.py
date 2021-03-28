@@ -32,15 +32,18 @@ METHOD_JUMPR = "jumpr"
 METHOD_JUMPL = "jumpl"
 METHOD_MOVER = "movr"
 METHOD_MOVEL = "movl"
+
+
 class Platform:
-    def __init__(self, start_x = None, start_y = None, end_x = None, end_y = None, last_visit = None, solutions = None, hash = None):
+    def __init__(self, start_x=None, start_y=None, end_x=None, end_y=None, last_visit=None, solutions=None, hash=None):
         self.start_x = start_x
         self.start_y = start_y
         self.end_x = end_x
         self.end_y = end_y
-        self.last_visit = last_visit # list of a list: [solution, 0]
+        self.last_visit = last_visit  # list of a list: [solution, 0]
         self.solutions = solutions
         self.hash = hash
+
 
 class Solution:
     def __init__(self, from_hash=None, to_hash=None, lower_bound=None, upper_bound=None, method=None, visited=False):
@@ -66,6 +69,7 @@ class AstarNode:
 
 class PathAnalyzer:
     """Converts minimap player coordinates to terrain information like ladders and platforms."""
+
     def __init__(self):
         """
         Difference between self.platforms and self.oneway_platforms: platforms can be a destination and an origin.
@@ -73,7 +77,7 @@ class PathAnalyzer:
         self.platforms: list of tuples, where tuple[0] is starting coordinate of platform, tuple[1] is end coordinate.
 
         """
-        self.platforms = {} # Format: hash, Platform()
+        self.platforms = {}  # Format: hash, Platform()
         self.oneway_platforms = {}
         self.ladders = []
         self.visited_coordinates = []
@@ -101,12 +105,12 @@ class PathAnalyzer:
         self.astar_open_val_grid = []  # 2d array to keep track of "open" values in a star search.
         self.astar_minimap_rect = []  # minimap rect (x,y,w,h) for use in generating astar data
 
-    def save(self, filename="mapdata.platform", minimap_roi = None):
+    def save(self, filename="mapdata.platform", minimap_roi=None):
         """Save platforms, oneway_platforms, ladders, minimap_roi to a file
         :param filename: path to save file
         :param minimap_roi: tuple or list of onscreen minimap bounding box coordinates which will be saved"""
         with open(filename, "wb") as f:
-            pickle.dump({"platforms" : self.platforms, "oneway": self.oneway_platforms, "minimap" : minimap_roi}, f)
+            pickle.dump({"platforms": self.platforms, "oneway": self.oneway_platforms, "minimap": minimap_roi}, f)
 
     def load(self, filename="mapdata.platform"):
         """Open a map data file and load data from file. Also sets class variables platform, oneway_platform, and minimap.
@@ -135,7 +139,7 @@ class PathAnalyzer:
                 # currently this only uses the platform's start x and y coords and traces them until end x coords.
                 for platform_coord in range(platform.start_x, platform.end_x + 1):
                     self.astar_map_grid[platform.start_y][platform_coord] = 1
-            return minimap_coords 
+            return minimap_coords
 
     def verify_data_file(self, filename):
         """
@@ -155,7 +159,6 @@ class PathAnalyzer:
             return minimap_coords
         else:
             return 0
-
 
     def hash(self, data):
         """
@@ -209,7 +212,6 @@ class PathAnalyzer:
         else:
             return 0
 
-
     def generate_solution_dict(self):
         """Generates a solution dictionary, which is a dictionary with platform as keys and a dictionary of a list[strategy, 0]
         This function is now called automatically within load()"""
@@ -246,8 +248,6 @@ class PathAnalyzer:
             for method in self.platforms[from_platform].solutions:
                 method.visited = False
 
-
-
     def select_move(self, current_platform):
         """
         Selects a solution from current_platform using PlatformScan
@@ -255,12 +255,14 @@ class PathAnalyzer:
         :return: solution list in solution array of current_playform
         """
         try:
-            for solution in sorted(self.platforms[current_platform].solutions, key= lambda x: self.platforms[x.to_hash].last_visit, reverse=True):
+            for solution in sorted(self.platforms[current_platform].solutions,
+                                   key=lambda x: self.platforms[x.to_hash].last_visit, reverse=True):
                 """if not solution.visited:
                     return solution"""
                 return solution
         except KeyError:
-            for solution in sorted(self.oneway_platforms[current_platform].solutions, key= lambda x: self.platforms[x.to_hash].last_visit, reverse=True):
+            for solution in sorted(self.oneway_platforms[current_platform].solutions,
+                                   key=lambda x: self.platforms[x.to_hash].last_visit, reverse=True):
                 """if not solution.visited:
                     return solution"""
                 return solution
@@ -275,19 +277,19 @@ class PathAnalyzer:
             self.visited_coordinates.append(converted_tuple)
 
         # check if in continous platform
-        if inp_y >= self.last_y-2 and inp_y <= self.last_y+2 and self.last_x >= self.last_x - self.platform_variance and self.last_x <= self.last_x + self.platform_variance:
+        if inp_y >= self.last_y - 2 and inp_y <= self.last_y + 2 and self.last_x >= self.last_x - self.platform_variance and self.last_x <= self.last_x + self.platform_variance:
             # check if current coordinate is within platform being tracked
             if converted_tuple not in self.current_oneway_coords:
                 self.current_oneway_coords.append(converted_tuple)
         else:
             # current coordinates do not belong in any platforms
             # terminate pending platform, if exists and create new pending platform
-            if len(self.current_oneway_coords) >= self.minimum_platform_length-1:
+            if len(self.current_oneway_coords) >= self.minimum_platform_length - 1:
                 platform_start = min(self.current_oneway_coords, key=lambda x: x[0])
                 platform_end = max(self.current_oneway_coords, key=lambda x: x[0])
                 d_hash = self.hash(str(platform_start))
                 self.oneway_platforms[d_hash] = Platform(platform_start[0], platform_start[1], platform_end[0],
-                                                  platform_end[1], 0, [], d_hash)
+                                                         platform_end[1], 0, [], d_hash)
             self.current_oneway_coords = []
             if converted_tuple not in self.visited_coordinates:
                 self.current_oneway_coords.append(converted_tuple)
@@ -312,8 +314,9 @@ class PathAnalyzer:
             platform_end = max(self.current_oneway_coords, key=lambda x: x[0])
 
             d_hash = self.hash(str(platform_start))
-            self.oneway_platforms[d_hash] = Platform(platform_start[0], platform_start[1], platform_end[0], platform_end[1], 0,
-                                              [], d_hash)
+            self.oneway_platforms[d_hash] = Platform(platform_start[0], platform_start[1], platform_end[0],
+                                                     platform_end[1], 0,
+                                                     [], d_hash)
             self.current_oneway_coords_coords = []
 
     def input(self, inp_x, inp_y):
@@ -343,7 +346,8 @@ class PathAnalyzer:
                 platform_end = max(self.current_platform_coords, key=lambda x: x[0])
 
                 d_hash = self.hash(str(platform_start))
-                self.platforms[d_hash] = Platform(platform_start[0], platform_start[1], platform_end[0], platform_end[1], 0, [], d_hash)
+                self.platforms[d_hash] = Platform(platform_start[0], platform_start[1], platform_end[0],
+                                                  platform_end[1], 0, [], d_hash)
 
             self.current_platform_coords = []
             if converted_tuple not in self.visited_coordinates:
@@ -396,34 +400,41 @@ class PathAnalyzer:
                     upper_bound_x = min(platform.end_x, other_platform.end_x)
                     if platform.start_y < other_platform.end_y:
                         # Platform is higher than current_platform. Thus we can just drop
-                        #solution = {"hash":key, "lower_bound":(lower_bound_x, platform.start_y), "upper_bound":(upper_bound_x, platform.start_y), "method":"drop", "visited" : False}
-                        solution = Solution(platform.hash, key, (lower_bound_x, platform.start_y), (upper_bound_x, platform.start_y), METHOD_DROP, False)
+                        # solution = {"hash":key, "lower_bound":(lower_bound_x, platform.start_y), "upper_bound":(upper_bound_x, platform.start_y), "method":"drop", "visited" : False}
+                        solution = Solution(platform.hash, key, (lower_bound_x, platform.start_y),
+                                            (upper_bound_x, platform.start_y), METHOD_DROP, False)
                         # Changed to using classes for readability
                         platform.solutions.append(solution)
                     else:
                         # We need to use double jump to get there, but first check if within jump height
                         if abs(platform.start_y - other_platform.start_y) <= self.dbljump_half_height:
-                            #solution = {"hash":key, "lower_bound":(lower_bound_x, platform.start_y), "upper_bound":(upper_bound_x, platform.start_y), "method":"dbljmp_half", "visited" : False}
-                            solution = Solution(platform.hash, key, (lower_bound_x, platform.start_y), (upper_bound_x, platform.start_y), METHOD_DBLJMP_HALF, False)
+                            # solution = {"hash":key, "lower_bound":(lower_bound_x, platform.start_y), "upper_bound":(upper_bound_x, platform.start_y), "method":"dbljmp_half", "visited" : False}
+                            solution = Solution(platform.hash, key, (lower_bound_x, platform.start_y),
+                                                (upper_bound_x, platform.start_y), METHOD_DBLJMP_HALF, False)
                             platform.solutions.append(solution)
                         elif abs(platform.start_y - other_platform.start_y) <= self.dbljump_max_height:
-                            #solution = {"hash": key, "lower_bound": (lower_bound_x, platform.start_y),"upper_bound": (upper_bound_x, platform.start_y), "method": "dbljmp_max", "visited" : False}
-                            solution = Solution(platform.hash, key, (lower_bound_x, platform.start_y), (upper_bound_x, platform.start_y), METHOD_DBLJMP_MAX, False)
+                            # solution = {"hash": key, "lower_bound": (lower_bound_x, platform.start_y),"upper_bound": (upper_bound_x, platform.start_y), "method": "dbljmp_max", "visited" : False}
+                            solution = Solution(platform.hash, key, (lower_bound_x, platform.start_y),
+                                                (upper_bound_x, platform.start_y), METHOD_DBLJMP_MAX, False)
                             platform.solutions.append(solution)
                 else:
                     # 2. No vertical overlaps. Calculate euclidean distance between each platform endpoints
-                    front_point_distance = math.sqrt((platform.start_x-other_platform.end_x)**2 + (platform.start_y-other_platform.end_y)**2)
+                    front_point_distance = math.sqrt(
+                        (platform.start_x - other_platform.end_x) ** 2 + (platform.start_y - other_platform.end_y) ** 2)
                     if front_point_distance <= self.jump_range:
                         # We can jump from the left end of the platform to goal
-                        #solution = {"hash":key, "lower_bound":(platform.start_x, platform.start_y), "upper_bound":(platform.start_x, platform.start_y), "method":"jmpl", "visited" : False}
-                        solution = Solution(platform.hash, key, (platform.start_x, platform.start_y), (platform.start_x, platform.start_y), METHOD_JUMPL, False)
+                        # solution = {"hash":key, "lower_bound":(platform.start_x, platform.start_y), "upper_bound":(platform.start_x, platform.start_y), "method":"jmpl", "visited" : False}
+                        solution = Solution(platform.hash, key, (platform.start_x, platform.start_y),
+                                            (platform.start_x, platform.start_y), METHOD_JUMPL, False)
                         platform.solutions.append(solution)
 
-                    back_point_distance = math.sqrt((platform.end_x-other_platform.start_x)**2 + (platform.end_y-other_platform.start_y)**2)
+                    back_point_distance = math.sqrt(
+                        (platform.end_x - other_platform.start_x) ** 2 + (platform.end_y - other_platform.start_y) ** 2)
                     if back_point_distance <= self.jump_range:
                         # We can jump fomr the right end of the platform to goal platform
-                        #solution = {"hash":key, "lower_bound":(platform.end_x, platform.end_y), "upper_bound":(platform.end_x, platform.end_y), "method":"jmpr", "visited" : False}
-                        solution = Solution(platform.hash, key, (platform.end_x, platform.end_y), (platform.end_x, platform.end_y), METHOD_JUMPR, False)
+                        # solution = {"hash":key, "lower_bound":(platform.end_x, platform.end_y), "upper_bound":(platform.end_x, platform.end_y), "method":"jmpr", "visited" : False}
+                        solution = Solution(platform.hash, key, (platform.end_x, platform.end_y),
+                                            (platform.end_x, platform.end_y), METHOD_JUMPR, False)
                         platform.solutions.append(solution)
 
     def astar_pathfind(self, start_coord, goal_coords):
@@ -438,9 +449,9 @@ class PathAnalyzer:
         map_width, map_height = self.astar_minimap_rect[2], self.astar_minimap_rect[3]
 
         # Reinitialize map grid data
-        for height in range(map_height+1):
-            self.astar_map_grid.append([0 for x in range(map_width+1)])
-            self.astar_open_val_grid.append([0 for x in range(map_width+1)])
+        for height in range(map_height + 1):
+            self.astar_map_grid.append([0 for x in range(map_width + 1)])
+            self.astar_open_val_grid.append([0 for x in range(map_width + 1)])
 
         for key, platform in self.platforms.items():
             # currently this only uses the platform's start x and y coords and traces them until end x coords.
@@ -472,7 +483,8 @@ class PathAnalyzer:
                     if self.astar_open_val_grid[coordinate[1]][coordinate[0]] < successor_g:
                         continue
 
-                successor_node = AstarNode(coordinate[0], coordinate[1], g=selection.g + successor_g, h=successor_h, path=successor_path)
+                successor_node = AstarNode(coordinate[0], coordinate[1], g=selection.g + successor_g, h=successor_h,
+                                           path=successor_path)
                 open_list.add(successor_node)
                 open_set.add(coordinate)
                 if self.astar_open_val_grid[coordinate[1]][coordinate[0]] > successor_g:
@@ -489,18 +501,18 @@ class PathAnalyzer:
         print(path)
         new_path = []
         current_index = 0
-        while current_index <= len(path)-1:
+        while current_index <= len(path) - 1:
             c_coords, c_method = path[current_index]
             if c_method == METHOD_MOVEL or c_method == METHOD_MOVER:
                 increment = 0  # current_index + increment of intem we are sure needs to be optimized
-                while current_index+increment < len(path)-1:
-                    n_coords, n_method = path[current_index+increment+1]
+                while current_index + increment < len(path) - 1:
+                    n_coords, n_method = path[current_index + increment + 1]
                     if n_method == c_method and n_coords[1] == c_coords[1]:
                         increment += 1
                     else:
-                        new_path.append(path[current_index+increment])
+                        new_path.append(path[current_index + increment])
                         break
-                current_index += increment+1
+                current_index += increment + 1
             else:
                 new_path.append(path[current_index])
                 current_index += 1
@@ -520,23 +532,22 @@ class PathAnalyzer:
         :return: g value
         """
         if current_y == goal_y:
-            return abs(current_x-goal_x)
+            return abs(current_x - goal_x)
         else:
             if current_y < goal_y:
                 if method == METHOD_DROP:
                     return abs(current_y - goal_y) * 0.8
                 if method == "horjmp":
                     return abs(current_y - goal_y) * 5
-                return abs(current_y-goal_y)* 1.5
+                return abs(current_y - goal_y) * 1.5
             elif current_y > goal_y:
                 if method == "horjmp":
                     return abs(current_y - goal_y) * 5
-                return abs(current_y-goal_y)* 1.2
-
+                return abs(current_y - goal_y) * 1.2
 
     def astar_h(self, x1, y1, x2, y2):
-        return math.sqrt((x1-x2)**2 + (y1-y2)**2)
-        #return abs(x1-x2) + abs(y1-y2)
+        return math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
+        # return abs(x1-x2) + abs(y1-y2)
 
     def astar_find_available_moves(self, x, y, goal_coordinate):
         """
@@ -558,14 +569,15 @@ class PathAnalyzer:
                 if (x + x_increment, y) == goal_coordinate:
                     return_list.append(((x + x_increment, y), METHOD_MOVER if x_increment > 0 else METHOD_MOVEL))
                     break
-                if x+x_increment > map_width:
+                if x + x_increment > map_width:
                     return_list.append(((x + x_increment, y), METHOD_MOVER if x_increment > 0 else METHOD_MOVEL))
                     break
                 if self.astar_map_grid[y][x + x_increment] == 1:
                     drop_distance = 1
-                    while y+drop_distance <= map_height:
+                    while y + drop_distance <= map_height:
                         if self.astar_map_grid[y + drop_distance][x] == 1:
-                            return_list.append(((x + x_increment, y), METHOD_MOVER if x_increment > 0 else METHOD_MOVEL))
+                            return_list.append(
+                                ((x + x_increment, y), METHOD_MOVER if x_increment > 0 else METHOD_MOVEL))
                             contiunue_check = False
                             break
                         drop_distance += 1
@@ -574,7 +586,8 @@ class PathAnalyzer:
                         if y - jmpheight <= 0:
                             break
                         if self.astar_map_grid[y - jmpheight][x + x_increment] == 1:
-                            return_list.append(((x + x_increment, y), METHOD_MOVER if x_increment > 0 else METHOD_MOVEL))
+                            return_list.append(
+                                ((x + x_increment, y), METHOD_MOVER if x_increment > 0 else METHOD_MOVEL))
                             contiunue_check = False
                             break
                 else:
@@ -619,7 +632,7 @@ class PathAnalyzer:
         slope = 0.05
         x_jump_range = 10 if current_x > start_x else -10
         y_jump_height = 1.4
-        max_coord_x = (start_x*2 + x_jump_range)/2
+        max_coord_x = (start_x * 2 + x_jump_range) / 2
         max_coord_y = start_y - y_jump_height
         if max_coord_y <= 0:
             return 0
@@ -633,9 +646,9 @@ class PathAnalyzer:
         :param y2: y coord2
         :return: float delay in second(s) needed
         """
-        height_delta = abs(y1-y2)
+        height_delta = abs(y1 - y2)
 
-        t = round(-(height_delta-41.5)/76, 2)
+        t = round(-(height_delta - 41.5) / 76, 2)
         if t < 0.15:
             return 0.15
         elif t > 0.45:
@@ -654,4 +667,3 @@ class PathAnalyzer:
         self.current_platform_coords = []
         self.current_ladder_coords = []
         self.ladders = []
-

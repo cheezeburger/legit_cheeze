@@ -49,6 +49,7 @@ class MacroControllerAStar(macro_script.MacroController):
         self.screen_processor.update_image(set_focus=False)
         # Update Constants
         player_minimap_pos = self.screen_processor.find_player_minimap_marker()
+        print(player_minimap_pos)
         if not player_minimap_pos:
             return -1
         self.player_manager.update(player_minimap_pos[0], player_minimap_pos[1])
