@@ -1,4 +1,6 @@
 import logging
+import admin
+import sys
 
 default_logger = logging.getLogger("main")
 default_logger.setLevel(logging.DEBUG)
@@ -8,6 +10,11 @@ fh = logging.FileHandler("logging.log")
 fh.setLevel(logging.DEBUG)
 fh.setFormatter(formatter)
 default_logger.addHandler(fh)
+
+if not admin.isUserAdmin():
+    print("Note: You must run this as admin")
+    admin.runAsAdmin(wait=False)
+    sys.exit()
 
 try:
     import multiprocessing, tkinter as tk, time, webbrowser, os, signal, pickle, sys, argparse
@@ -22,7 +29,7 @@ try:
     from keystate_manager import DEFAULT_KEY_MAP
     from directinput_constants import keysym_map
     from macro_script import MacroController
-    # from macro_script_astar import MacroControllerAStar as MacroController
+    # from BaseScript import MacroScript as MacroController
     from keybind_setup_window import SetKeyMap
 except:
     default_logger.exception("error during import")

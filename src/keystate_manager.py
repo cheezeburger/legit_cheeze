@@ -1,5 +1,6 @@
 import directinput_constants as dic
 import time, ctypes
+import keyboard
 from win32api import GetKeyState
 from win32con import VK_NUMLOCK
 
@@ -111,11 +112,9 @@ class KeyboardInputManager:
         :param additional_duration: additinal delay to be added
         :return: None
         """
-        print('calling')
         self._direct_press(key_code)
         time.sleep(duration+additional_duration)
         self._direct_release(key_code)
-        print('call end')
 
     def translate_key_state(self):
         """
@@ -162,15 +161,35 @@ class KeyboardInputManager:
             self.key_state[keycode] = 0
         self.translate_key_state()
 
+    # Code from MapleController
+    def sleep(self, seconds):
+        time.sleep(seconds)
+
+    def press(self, key):
+        if key:
+            keyboard.press(key)
+
+    def release(self, key):
+        if key:
+            keyboard.release(key)
+
+    def press_and_release(self, key, release_delay=.1, repeat=1):
+        print(key)
+        if key:
+            for i in range(repeat):
+                self.press(key)
+                self.sleep(release_delay)
+                self.release(key)
+
 DEFAULT_KEY_MAP = {
-    "jump": [dic.DIK_SPACE, "점프"],
-    "moonlight_slash": [dic.DIK_A, "문라이트 슬래쉬"],
-    "thousand_sword": [dic.DIK_F, "사우전드 소드"],
-    "release_overload": [dic.DIK_Q, "릴리즈 오버로드"],
-    "demon_strike": [dic.DIK_1, "데몬 스트라이크"],
-    "shield_chase": [dic.DIK_S, "실드 체이싱"],
-    "holy_symbol": [dic.DIK_4, "홀리 심볼"],
-    "hyper_body": [dic.DIK_5, "하이퍼 바디"],
-    "sharp_eyes": [dic.DIK_6, "샤프 아이즈"]
+    "jump": [dic.DIK_SPACE, "Jump"],
+    "main_attack": [dic.DIK_A, "Main Attack Skill"],
+    "secondary_attack": [dic.DIK_F, "Secondary Attack Skill"],
+    "other_attack_1": [dic.DIK_Q, "Other Attack Skill 1"],
+    "other_attack_2": [dic.DIK_1, "Other Attack Skill 2"],
+    "auto_buff_1": [dic.DIK_S, "Auto buff 1"],
+    "auto_buff_2": [dic.DIK_4, "Auto buff 2"],
+    "auto_buff_3": [dic.DIK_5, "Auto buff 3"],
+    "auto_buff_4": [dic.DIK_6, "Auto buff 4"]
 }
 

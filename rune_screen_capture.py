@@ -1,13 +1,15 @@
 # -*- coding:utf-8 -*-
-from screen_processor import MapleScreenCapturer
-from keystate_manager import KeyboardInputManager
-from directinput_constants import DIK_SPACE, DIK_UP
+from src.screen_processor import MapleScreenCapturer
+from src.keystate_manager import KeyboardInputManager
+# from src.directinput_constants import DIK_SPACE, DIK_UP
+DIK_SPACE = 0x39
+DIK_UP = 0xC8
 import cv2, os, time, glob, imutils
 import numpy as np
 cap = MapleScreenCapturer()
 kbd = KeyboardInputManager()
 from win32gui import SetForegroundWindow
-os.chdir("images/screenshots/finished")
+os.chdir("rune_trainer/images/screenshots/finished")
 imgs = glob.glob("*.png")
 highest = 0
 for name in imgs:

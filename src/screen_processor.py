@@ -1,16 +1,12 @@
 import cv2, win32gui, time, math, win32ui, win32con
 from PIL import ImageGrab
 import numpy as np, ctypes, ctypes.wintypes
+from win32com.client import Dispatch
 
 class MapleWindowNotFoundError(Exception):
     pass
 
-
 MAPLESTORY_WINDOW_TITLE = "MapleStory"
-
-
-
-
 
 class MapleScreenCapturer:
     """Container for capturing MS screen"""
@@ -23,6 +19,16 @@ class MapleScreenCapturer:
             return 0
         else:
             return window_hwnd
+
+    def focus_maple(self):
+        print(self.hwnd)
+        shell = Dispatch("WScript.Shell")
+        shell.SendKeys('%')
+
+        try:
+            win32gui.SetForegroundWindow(self.hwnd)
+        except:
+            pass
 
     def ms_get_screen_rect(self, hwnd):
         """

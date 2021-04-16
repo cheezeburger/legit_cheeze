@@ -1,4 +1,4 @@
-from directinput_constants import DIK_RIGHT, DIK_DOWN, DIK_LEFT, DIK_UP, DIK_ALT
+from directinput_constants import DIK_RIGHT, DIK_DOWN, DIK_LEFT, DIK_UP, DIK_D
 from keystate_manager import DEFAULT_KEY_MAP
 import time, math, random
 # simple jump vertical distance: about 6 pixels
@@ -7,7 +7,7 @@ class PlayerController:
     """
     This class keeps track of character location and manages advanced movement and attacks.
     """
-    def __init__(self, key_mgr, screen_handler, keymap=DEFAULT_KEY_MAP):
+    def __init__(self, key_mgr, screen_handler, keymap=DEFAULT_KEY_MAP, mode="teleport"):
         """
         Class Variables:
 
@@ -29,7 +29,7 @@ class PlayerController:
         self.x = None
         self.y = None
 
-
+        self.mode = mode #teleport/flash
         self.keymap = {}
         for key, value in keymap.items():
             self.keymap[key] = value[0]
@@ -54,7 +54,7 @@ class PlayerController:
         self.moonlight_slash_x_radius = 13  # exceed: moonlight slash's estimalte x hitbox RADIUS in minimap coords.
         self.moonlight_slash_delay = 0.9  # delay after using MS where character is not movable
 
-        self.horizontal_movement_threshold = 21 # Glide instead of walk if distance greater than threshold
+        self.horizontal_movement_threshold = 21 # Teleport/Glide instead of walk if distance greater than threshold
 
         self.skill_cast_counter = 0
         self.skill_counter_time = 0
@@ -354,27 +354,52 @@ class PlayerController:
             mode = "l"
         else:
             return 0
+        print("current %s, goal %s", current_x, goal_x)
+        # if mode == "r":
+        #     # need to go right:
+        #     self.key_mgr._direct_press(DIK_RIGHT)
+        # elif mode == "l":
+        #     # need to go left:
+        #     self.key_mgr._direct_press(DIK_LEFT)
+        # while True:
+        #     self.update()
+        #     if not self.x:
+        #         assert 1 == 0, "horizontal_move goal: failed to recognize coordinates"
+        #
+        #     if mode == "r":
+        #         if self.x >= goal_x-self.horizontal_goal_offset:
+        #             self.key_mgr._direct_release(DIK_RIGHT)
+        #             break
+        #     elif mode == "l":
+        #         if self.x <= goal_x+self.horizontal_goal_offset:
+        #             self.key_mgr._direct_release(DIK_LEFT)
+        #             break
 
-        if mode == "r":
-            # need to go right:
-            self.key_mgr._direct_press(DIK_RIGHT)
-        elif mode == "l":
-            # need to go left:
-            self.key_mgr._direct_press(DIK_LEFT)
-        while True:
-            self.update()
-            if not self.x:
-                assert 1 == 0, "horizontal_move goal: failed to recognize coordinates"
+    def teleport_up(self):
+        """Warining: is a blocking call"""
+        self.key_mgr._direct_press(DIK_UP)
+        self.key_mgr._direct_press(DIK_D)
+        time.sleep(abs(0.01 + self.random_duration(0.05)))
 
-            if mode == "r":
-                if self.x >= goal_x-self.horizontal_goal_offset:
-                    self.key_mgr._direct_release(DIK_RIGHT)
-                    break
-            elif mode == "l":
-                if self.x <= goal_x+self.horizontal_goal_offset:
-                    self.key_mgr._direct_release(DIK_LEFT)
-                    break
+        self.key_mgr._direct_release(DIK_UP)
+        self.key_mgr._direct_release(DIK_UP)
 
+    def teleport_jup(self):
+        """Warining: is a blocking call"""
+        self.key_mgr._direct_press(self.jump_key)
+        time.sleep(0.1 + self.random_duration(0.05))
+
+        self.key_mgr._direct_release(self.jump_key)
+        time.sleep(abs(0.05 + self.random_duration(0.05)))
+
+        self.key_mgr._direct_press(DIK_UP)
+        time.sleep(abs(0.01 + self.random_duration(0.05)))
+
+        self.key_mgr._direct_press(DIK_D)
+        time.sleep(abs(0.01 + self.random_duration(0.05)))
+
+        self.key_mgr._direct_release(DIK_UP)
+        self.key_mgr._direct_release(DIK_UP)
 
     def dbljump_max(self):
         """Warining: is a blocking call"""

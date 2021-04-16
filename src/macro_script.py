@@ -5,6 +5,8 @@ import terrain_analyzer as ta
 import directinput_constants as dc
 import rune_solver as rs
 import logging, math, time, random
+from screen_processor import MapleScreenCapturer
+
 
 class CustomLogger:
     def __init__(self, logger_obj, logger_queue):
@@ -21,11 +23,12 @@ class CustomLogger:
         if self.logger_queue:
             self.logger_queue.put(("log", " ".join([str(x) for x in args])))
 
+
 class MacroController:
     # 3rd param rune_model_dir=r"arrow_classifier_keras_gray.h5",
     def __init__(self, keymap=km.DEFAULT_KEY_MAP, log_queue=None):
 
-        #sys.excepthook = self.exception_hook
+        # sys.excepthook = self.exception_hook
 
         self.screen_capturer = sp.MapleScreenCapturer()
         logger = logging.getLogger(self.__class__.__name__)
@@ -39,12 +42,11 @@ class MacroController:
         logger.addHandler(fh)
 
         self.logger = CustomLogger(logger, self.log_queue)
-        self.logger.debug("%s init"%self.__class__.__name__)
+        self.logger.debug("%s init" % self.__class__.__name__)
         self.screen_processor = sp.StaticImageProcessor(self.screen_capturer)
         self.terrain_analyzer = ta.PathAnalyzer()
         self.keyhandler = km.KeyboardInputManager()
-        self.player_manager = pc.PlayerController(self.keyhandler, self.screen_processor, keymap)
-
+        self.player_manager = pc.PlayerController(self.keyhandler, self.screen_processor, keymap, mode="teleport")
 
         self.last_platform_hash = None
         self.current_platform_hash = None
@@ -78,19 +80,19 @@ class MacroController:
         self.unstick_attempts_threshold = 5
         # If unstick after this amount fails to get us on a known platform, abort abort.
 
-        self.logger.debug("%s init finished"%self.__class__.__name__)
+        self.logger.debug("%s init finished" % self.__class__.__name__)
 
     def load_and_process_platform_map(self, path="mapdata.platform"):
         retval = self.terrain_analyzer.load(path)
         self.terrain_analyzer.generate_solution_dict()
         if retval != 0:
-            self.logger.debug("Loaded platform data %s"%(path))
+            self.logger.debug("Loaded platform data %s" % (path))
         else:
-            self.logger.debug("Failed to load platform data %s, terrain_analyzer.load returned 0"%(path))
+            self.logger.debug("Failed to load platform data %s, terrain_analyzer.load returned 0" % (path))
         return retval
 
     def distance(self, x1, y1, x2, y2):
-        return math.sqrt((x1-x2)**2 + (y1-y2)**2)
+        return math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
 
     def find_current_platform(self):
         current_platform_hash = None
@@ -190,7 +192,8 @@ class MacroController:
                         time.sleep(1)
                 time.sleep(0.5)
             else:
-                self.logger.debug("could not generate path to rune platform %s from starting platform %s"%(rune_platform_hash, self.current_platform_hash))
+                self.logger.debug("could not generate path to rune platform %s from starting platform %s" % (
+                rune_platform_hash, self.current_platform_hash))
         return 0
 
     def log_skill_usage_statistics(self):
@@ -201,8 +204,9 @@ class MacroController:
         if not self.player_manager.skill_counter_time:
             self.player_manager.skill_counter_time = time.time()
         if time.time() - self.player_manager.skill_counter_time > 60:
-
-            self.logger.debug("skills casted in duration %d: %d skill/s: %f"%(int(time.time() - self.player_manager.skill_counter_time), self.player_manager.skill_cast_counter, self.player_manager.skill_cast_counter/int(time.time() - self.player_manager.skill_counter_time)))
+            self.logger.debug("skills casted in duration %d: %d skill/s: %f" % (
+            int(time.time() - self.player_manager.skill_counter_time), self.player_manager.skill_cast_counter,
+            self.player_manager.skill_cast_counter / int(time.time() - self.player_manager.skill_counter_time)))
             self.player_manager.skill_cast_counter = 0
             self.player_manager.skill_counter_time = time.time()
 
@@ -219,81 +223,84 @@ class MacroController:
             -1: problem in image processing
             -2: problem in navigation/pathing
         """
-        self.keyhandler.single_press(dc.DIK_LCTRL, duration=2)
+        # self.keyhandler.single_press(dc.DIK_LCTRL, duration=2)
+        # MapleScreenCapturer().focus_maple()
+        # self.keyhandler.press_and_release(key='space')
+
         # Check if MapleStory window is alive
-        # random.seed((time.time() * 10**4) % 10 ** 3)
-        # if random.randint(1, self.restrict_moonlight_slash_probability) == 2:
-        #     restrict_moonlight_slash = True
-        # else:
-        #     restrict_moonlight_slash = False
-        #
-        # self.log_skill_usage_statistics()
-        #
-        # if not self.screen_capturer.ms_get_screen_hwnd():
-        #     self.logger.debug("Failed to get MS screen rect")
-        #     self.abort()
-        #     return -1
-        #
-        # # Update Screen
-        # self.screen_processor.update_image(set_focus=True)
-        #
-        # # Update Constants
-        # player_minimap_pos = self.screen_processor.find_player_minimap_marker()
-        # if not player_minimap_pos:
-        #     return -1
-        # self.player_manager.update(player_minimap_pos[0], player_minimap_pos[1])
-        #
-        # # Placeholder for Lie Detector Detector (sounds weird)
-        # # End Placeholder
-        #
-        # # Check if player is on platform
-        # self.current_platform_hash = None
-        # get_current_platform = self.find_current_platform()
-        #
-        # print(get_current_platform)
-        #
-        # if not get_current_platform:
-        #     # Move to nearest platform and redo loop
-        #     # Failed to find platform.
-        #     self.platform_fail_loops += 1
-        #     if self.platform_fail_loops >= self.platform_fail_loop_threshold:
-        #         self.logger.debug("stuck. attempting unstick()...")
-        #         self.unstick_attempts += 1
-        #         self.unstick()
-        #     if self.unstick_attempts >= self.unstick_attempts_threshold:
-        #         self.logger.debug("unstick() threshold reached. sending error code..")
-        #         return -2
-        #     else:
-        #         return 0
-        # else:
-        #     self.platform_fail_loops = 0
-        #     self.unstick_attempts = 0
-        #     self.current_platform_hash = get_current_platform
-        #
-        # # Update navigation dictionary with last_platform and current_platform
-        # if self.goal_platform_hash and self.current_platform_hash == self.goal_platform_hash:
-        #     self.terrain_analyzer.move_platform(self.last_platform_hash, self.current_platform_hash)
-        #
-        # # Reinitialize last_platform to current_platform
-        # self.last_platform_hash = self.current_platform_hash
-        #
-        # if self.loop_count % self.reset_navmap_loop_count == 0 and self.loop_count != 0:
-        #     # Reset navigation map to randomize pathing
-        #     self.terrain_analyzer.generate_solution_dict()
-        #     numbers = []
-        #     for x in range(0, len(self.terrain_analyzer.platforms.keys())):
-        #         numbers.append(x)
-        #     random.shuffle(numbers)
-        #     idx = 0
-        #     if self.navmap_reset_type == 1:
-        #         for key, platform in self.terrain_analyzer.platforms.items():
-        #             platform.last_visit = numbers[idx]
-        #             idx += 1
-        #
-        #     self.navmap_reset_type *= -1
-        #     self.logger.debug("navigation map reset and randomized at loop #%d"%(self.loop_count))
-        #
-        # # Rune Detector
+        random.seed((time.time() * 10 ** 4) % 10 ** 3)
+        if random.randint(1, self.restrict_moonlight_slash_probability) == 2:
+            restrict_moonlight_slash = True
+        else:
+            restrict_moonlight_slash = False
+
+        self.log_skill_usage_statistics()
+
+        if not self.screen_capturer.ms_get_screen_hwnd():
+            self.logger.debug("Failed to get MS screen rect")
+            self.abort()
+            return -1
+
+        # Update Screen
+        self.screen_processor.update_image(set_focus=True)
+
+        # Update Constants
+        player_minimap_pos = self.screen_processor.find_player_minimap_marker()
+        if not player_minimap_pos:
+            return -1
+        self.player_manager.update(player_minimap_pos[0], player_minimap_pos[1])
+
+        # Placeholder for Lie Detector Detector (sounds weird)
+        # End Placeholder
+
+        # Check if player is on platform
+        self.current_platform_hash = None
+        get_current_platform = self.find_current_platform()
+
+        print(get_current_platform)
+
+        if not get_current_platform:
+            # Move to nearest platform and redo loop
+            # Failed to find platform.
+            self.platform_fail_loops += 1
+            if self.platform_fail_loops >= self.platform_fail_loop_threshold:
+                self.logger.debug("stuck. attempting unstick()...")
+                self.unstick_attempts += 1
+                self.unstick()
+            if self.unstick_attempts >= self.unstick_attempts_threshold:
+                self.logger.debug("unstick() threshold reached. sending error code..")
+                return -2
+            else:
+                return 0
+        else:
+            self.platform_fail_loops = 0
+            self.unstick_attempts = 0
+            self.current_platform_hash = get_current_platform
+
+        # Update navigation dictionary with last_platform and current_platform
+        if self.goal_platform_hash and self.current_platform_hash == self.goal_platform_hash:
+            self.terrain_analyzer.move_platform(self.last_platform_hash, self.current_platform_hash)
+
+        # Reinitialize last_platform to current_platform
+        self.last_platform_hash = self.current_platform_hash
+
+        if self.loop_count % self.reset_navmap_loop_count == 0 and self.loop_count != 0:
+            # Reset navigation map to randomize pathing
+            self.terrain_analyzer.generate_solution_dict()
+            numbers = []
+            for x in range(0, len(self.terrain_analyzer.platforms.keys())):
+                numbers.append(x)
+            random.shuffle(numbers)
+            idx = 0
+            if self.navmap_reset_type == 1:
+                for key, platform in self.terrain_analyzer.platforms.items():
+                    platform.last_visit = numbers[idx]
+                    idx += 1
+
+            self.navmap_reset_type *= -1
+            self.logger.debug("navigation map reset and randomized at loop #%d" % (self.loop_count))
+
+        # Rune Detector
         # self.player_manager.update()
         # rune_platform_hash, rune_coords = self.find_rune_platform()
         # if rune_platform_hash:
@@ -314,117 +321,125 @@ class MacroController:
         #         self.player_manager.last_rune_solve_time = time.time()
         #         self.current_platform_hash = rune_platform_hash
         #         time.sleep(0.5)
-        # # End Rune Detector
-        #
-        # # We are on a platform. find an optimal way to clear platform.
-        # # If we know our next platform destination, we can make our path even more efficient
-        # next_platform_solution = self.terrain_analyzer.select_move(self.current_platform_hash)
-        # #print("next platform solution:", next_platform_solution.method, next_platform_solution.to_hash)
-        # self.logger.debug("next solution destination: %s method: %s"%(next_platform_solution.to_hash, next_platform_solution.method))
-        # self.goal_platform_hash = next_platform_solution.to_hash
-        #
-        # # lookahead pathing
-        # lookahead_platform_solution = self.terrain_analyzer.select_move(self.goal_platform_hash)
-        # lookahead_solution_lb = lookahead_platform_solution.lower_bound
-        # lookahead_solution_ub = lookahead_platform_solution.upper_bound
-        #
-        # #lookahead_lb = lookahead_lb[0] if lookahead_lb[0] >= next_platform_solution.lower_bound[0] else next_platform_solution.lower_bound[0]
-        # #lookahead_ub = lookahead_ub[0] if lookahead_ub[0] <= next_platform_solution.upper_bound[0] else next_platform_solution.upper_bound[0]
-        #
-        # if lookahead_solution_lb[0] < next_platform_solution.lower_bound[0] and lookahead_solution_ub[0] > next_platform_solution.lower_bound[0] or \
-        #         lookahead_solution_lb[0] > next_platform_solution.lower_bound[0] and lookahead_solution_lb[0] < next_platform_solution.upper_bound[0]:
-        #     lookahead_lb = lookahead_solution_lb[0] if lookahead_solution_lb[0] >= next_platform_solution.lower_bound[0] and lookahead_solution_lb[0] <= next_platform_solution.upper_bound[0] else next_platform_solution.lower_bound[0]
-        #     lookahead_ub = lookahead_solution_ub[0] if lookahead_solution_ub[0] <= next_platform_solution.upper_bound[0] and lookahead_solution_ub[0] >= next_platform_solution.lower_bound[0] else next_platform_solution.upper_bound[0]
-        #
-        # else:
-        #     lookahead_lb = next_platform_solution.lower_bound[0]
-        #     lookahead_ub = next_platform_solution.upper_bound[0]
-        #
-        # lookahead_lb = lookahead_lb + random.randint(0, 2)
-        # lookahead_ub = lookahead_ub - random.randint(0, 2)
-        #
-        # # end lookahead pathing
-        # # Start skill usage section
+        # End Rune Detector
+
+        # We are on a platform. find an optimal way to clear platform.
+        # If we know our next platform destination, we can make our path even more efficient
+        next_platform_solution = self.terrain_analyzer.select_move(self.current_platform_hash)
+        # print("next platform solution:", next_platform_solution.method, next_platform_solution.to_hash)
+        self.logger.debug("next solution destination: %s method: %s" % (
+        next_platform_solution.to_hash, next_platform_solution.method))
+        self.goal_platform_hash = next_platform_solution.to_hash
+
+        # lookahead pathing
+        lookahead_platform_solution = self.terrain_analyzer.select_move(self.goal_platform_hash)
+        lookahead_solution_lb = lookahead_platform_solution.lower_bound
+        lookahead_solution_ub = lookahead_platform_solution.upper_bound
+
+        # lookahead_lb = lookahead_lb[0] if lookahead_lb[0] >= next_platform_solution.lower_bound[0] else next_platform_solution.lower_bound[0]
+        # lookahead_ub = lookahead_ub[0] if lookahead_ub[0] <= next_platform_solution.upper_bound[0] else next_platform_solution.upper_bound[0]
+
+        if lookahead_solution_lb[0] < next_platform_solution.lower_bound[0] and lookahead_solution_ub[0] > \
+                next_platform_solution.lower_bound[0] or \
+                lookahead_solution_lb[0] > next_platform_solution.lower_bound[0] and lookahead_solution_lb[0] < \
+                next_platform_solution.upper_bound[0]:
+            lookahead_lb = lookahead_solution_lb[0] if lookahead_solution_lb[0] >= next_platform_solution.lower_bound[
+                0] and lookahead_solution_lb[0] <= next_platform_solution.upper_bound[0] else \
+            next_platform_solution.lower_bound[0]
+            lookahead_ub = lookahead_solution_ub[0] if lookahead_solution_ub[0] <= next_platform_solution.upper_bound[
+                0] and lookahead_solution_ub[0] >= next_platform_solution.lower_bound[0] else \
+            next_platform_solution.upper_bound[0]
+
+        else:
+            lookahead_lb = next_platform_solution.lower_bound[0]
+            lookahead_ub = next_platform_solution.upper_bound[0]
+
+        lookahead_lb = lookahead_lb + random.randint(0, 2)
+        lookahead_ub = lookahead_ub - random.randint(0, 2)
+
+        # end lookahead pathing
+        # Start skill usage section
         # if abs(self.player_manager.x - next_platform_solution.lower_bound[0]) < abs(
         #         self.player_manager.x - next_platform_solution.upper_bound[0]):
-        #     # closer to lower bound
-        #     skill_used = self.player_manager.randomize_skill()
+        # closer to lower bound
+        # skill_used = self.player_manager.randomize_skill()
         # else:
         #     skill_used = self.player_manager.randomize_skill()
-        # # End skill usage
-        #
-        # # Find coordinates to move to next platform
-        # if self.player_manager.x >= next_platform_solution.lower_bound[0] and self.player_manager.x <= next_platform_solution.upper_bound[0]:
-        #     # We are within the solution bounds. attack within solution range and move
-        #     if abs(self.player_manager.x - next_platform_solution.lower_bound[0]) < abs(self.player_manager.x - next_platform_solution.upper_bound[0]):
-        #         # We are closer to lower boound, so move to upper bound to maximize movement
-        #         in_solution_movement_goal = lookahead_ub
-        #     else:
-        #         in_solution_movement_goal = lookahead_lb
-        #     if restrict_moonlight_slash:
-        #         self.player_manager.optimized_horizontal_move(in_solution_movement_goal)
-        #     else:
-        #         if random.randint(1, self.walk_probability) == 1:
-        #             self.player_manager.moonlight_slash_sweep_move(in_solution_movement_goal, glide=False, no_attack_distance=skill_used * self.player_manager.moonlight_slash_x_radius+1.2)
-        #         else:
-        #             self.player_manager.moonlight_slash_sweep_move(in_solution_movement_goal, no_attack_distance=skill_used * self.player_manager.moonlight_slash_x_radius*1.2)
-        #
-        # else:
-        #     # We need to move within the solution bounds. First, find closest solution bound which can cover majority of current platform.
-        #     if self.player_manager.x < next_platform_solution.lower_bound[0]:
-        #         # We are left of solution bounds.
-        #         #print("run sweep move")
-        #         if restrict_moonlight_slash:
-        #             self.player_manager.optimized_horizontal_move(lookahead_ub)
-        #         else:
-        #             if random.randint(1, self.walk_probability) == 1:
-        #                 self.player_manager.moonlight_slash_sweep_move(lookahead_ub, glide=False, no_attack_distance=skill_used * self.player_manager.moonlight_slash_x_radius*1.2)
-        #             else:
-        #                 self.player_manager.moonlight_slash_sweep_move(lookahead_ub, no_attack_distance=skill_used * self.player_manager.moonlight_slash_x_radius*1.2)
-        #
-        #     else:
-        #         # We are right of solution bounds
-        #         #print("run sweep move")
-        #         if restrict_moonlight_slash:
-        #             self.player_manager.optimized_horizontal_move(lookahead_lb)
-        #         else:
-        #             if random.randint(1, self.walk_probability) == 1:
-        #                 self.player_manager.moonlight_slash_sweep_move(lookahead_lb, glide=False, no_attack_distance=skill_used * self.player_manager.moonlight_slash_x_radius*1.2)
-        #             else:
-        #                 self.player_manager.moonlight_slash_sweep_move(lookahead_lb, no_attack_distance=skill_used * self.player_manager.moonlight_slash_x_radius*1.2)
-        #
-        # time.sleep(0.4)
-        #
-        # # All movement and attacks finished. Now perform movement
-        # movement_type = next_platform_solution.method
-        # if movement_type == ta.METHOD_DROP:
-        #     self.player_manager.drop()
-        #     time.sleep(1)
-        # elif movement_type == ta.METHOD_JUMPL:
-        #     self.player_manager.jumpl_double()
-        #     time.sleep(0.5)
-        # elif movement_type == ta.METHOD_JUMPR:
-        #     self.player_manager.jumpr_double()
-        #     time.sleep(0.5)
-        # elif movement_type == ta.METHOD_DBLJMP_MAX:
-        #     self.player_manager.dbljump_max()
-        #     time.sleep(1)
-        # elif movement_type == ta.METHOD_DBLJMP_HALF:
-        #     self.player_manager.dbljump_half()
-        #     time.sleep(0.7)
-        #
-        # #End inter-platform movement
-        #
-        # # Other buffs
+        # End skill usage
+
+        # Find coordinates to move to next platform
+        if self.player_manager.x >= next_platform_solution.lower_bound[0] and self.player_manager.x <= \
+                next_platform_solution.upper_bound[0]:
+            # We are within the solution bounds. attack within solution range and move
+            if abs(self.player_manager.x - next_platform_solution.lower_bound[0]) < abs(
+                    self.player_manager.x - next_platform_solution.upper_bound[0]):
+                # We are closer to lower boound, so move to upper bound to maximize movement
+                in_solution_movement_goal = lookahead_ub
+            else:
+                in_solution_movement_goal = lookahead_lb
+                # if restrict_moonlight_slash:
+                self.player_manager.optimized_horizontal_move(in_solution_movement_goal)
+            # else:
+            #     if random.randint(1, self.walk_probability) == 1:
+            #         self.player_manager.moonlight_slash_sweep_move(in_solution_movement_goal, glide=False, no_attack_distance=skill_used * self.player_manager.moonlight_slash_x_radius+1.2)
+            #     else:
+            #         self.player_manager.moonlight_slash_sweep_move(in_solution_movement_goal, no_attack_distance=skill_used * self.player_manager.moonlight_slash_x_radius*1.2)
+
+        else:
+            # We need to move within the solution bounds. First, find closest solution bound which can cover majority of current platform.
+            if self.player_manager.x < next_platform_solution.lower_bound[0]:
+                # We are left of solution bounds.
+                # print("run sweep move")
+                # if restrict_moonlight_slash:
+                self.player_manager.optimized_horizontal_move(lookahead_ub)
+            # else:
+            #     if random.randint(1, self.walk_probability) == 1:
+            #         self.player_manager.moonlight_slash_sweep_move(lookahead_ub, glide=False, no_attack_distance=skill_used * self.player_manager.moonlight_slash_x_radius*1.2)
+            #     else:
+            #         self.player_manager.moonlight_slash_sweep_move(lookahead_ub, no_attack_distance=skill_used * self.player_manager.moonlight_slash_x_radius*1.2)
+
+            else:
+                # We are right of solution bounds
+                # print("run sweep move")
+                # if restrict_moonlight_slash:
+                self.player_manager.optimized_horizontal_move(lookahead_lb)
+            # else:
+            #     if random.randint(1, self.walk_probability) == 1:
+            #         self.player_manager.moonlight_slash_sweep_move(lookahead_lb, glide=False, no_attack_distance=skill_used * self.player_manager.moonlight_slash_x_radius*1.2)
+            #     else:
+            #         self.player_manager.moonlight_slash_sweep_move(lookahead_lb, no_attack_distance=skill_used * self.player_manager.moonlight_slash_x_radius*1.2)
+
+        time.sleep(0.4)
+
+        # All movement and attacks finished. Now perform movement
+        movement_type = next_platform_solution.method
+        if movement_type == ta.METHOD_DROP:
+            self.player_manager.drop()
+            time.sleep(1)
+        elif movement_type == ta.METHOD_JUMPL:
+            self.player_manager.jumpl_double()
+            time.sleep(0.5)
+        elif movement_type == ta.METHOD_JUMPR:
+            self.player_manager.jumpr_double()
+            time.sleep(0.5)
+        elif movement_type == ta.METHOD_DBLJMP_MAX:
+            self.player_manager.dbljump_max()
+            time.sleep(1)
+        elif movement_type == ta.METHOD_DBLJMP_HALF:
+            self.player_manager.dbljump_half()
+            time.sleep(0.7)
+
+        # End inter-platform movement
+
+        # Other buffs
         # self.player_manager.holy_symbol()
         # self.player_manager.hyper_body()
         # self.player_manager.release_overload()
-        # time.sleep(0.05)
-        #
-        # # Finished
-        # self.loop_count += 1
-        # return 0
+        time.sleep(0.05)
 
+        # Finished
+        self.loop_count += 1
+        return 0
 
     def unstick(self):
         """
@@ -432,7 +447,7 @@ class MacroController:
         Solution: try random stuff to attempt it to reposition it self
         :return: None
         """
-        #Method one: get off ladder
+        # Method one: get off ladder
         self.player_manager.jumpr()
         time.sleep(2)
         if self.find_current_platform():
@@ -447,4 +462,3 @@ class MacroController:
         self.logger.debug("aborted")
         if self.log_queue:
             self.log_queue.put(["stopped", None])
-
