@@ -1,4 +1,5 @@
 import logging
+import admin
 
 default_logger = logging.getLogger("main")
 default_logger.setLevel(logging.DEBUG)
@@ -8,6 +9,11 @@ fh = logging.FileHandler("logging.log")
 fh.setLevel(logging.DEBUG)
 fh.setFormatter(formatter)
 default_logger.addHandler(fh)
+
+if not admin.isUserAdmin():
+    print("Note: You must run this as admin")
+    admin.runAsAdmin(wait=False)
+    sys.exit()
 
 try:
     import multiprocessing, tkinter as tk, time, webbrowser, os, signal, pickle, sys, argparse
