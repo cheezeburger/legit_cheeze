@@ -383,6 +383,7 @@ class PlayerController:
                     break
 
     def castKishin(self):
+        time.sleep(1.5)
         self.key_mgr._direct_press(DIK_F)
         time.sleep(0.1)
         self.key_mgr._direct_press(DIK_F)
@@ -427,12 +428,14 @@ class PlayerController:
         time.sleep(1)
 
     def castHs(self):
+        time.sleep(1)
         self.key_mgr._direct_press(DIK_Y)
         time.sleep(0.2)
         self.key_mgr._direct_release(DIK_Y)
         time.sleep(2)
 
     def castSi(self):
+        time.sleep(1)
         self.key_mgr._direct_press(DIK_U)
         time.sleep(0.2)
         self.key_mgr._direct_release(DIK_5)
