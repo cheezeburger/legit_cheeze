@@ -93,6 +93,8 @@ class MacroController:
         self.si_time = 0
         self.pet_feed_time = 0
 
+        self.direction_change_time = 0
+
     def load_and_process_platform_map(self, path="mapdata.platform"):
         retval = self.terrain_analyzer.load(path)
         self.terrain_analyzer.generate_solution_dict()
@@ -234,6 +236,9 @@ class MacroController:
         get_current_platform = self.find_current_platform()
 
         # Initial Buffs
+        if not self.direction_change_time:
+            self.direction_change_time = time.time()
+
         if not self.haku_time or time.time() - self.haku_time > 300:
             print('Casting Haku buff')
             self.haku_time = time.time()
@@ -280,24 +285,34 @@ class MacroController:
         else:
             self.zero_coord_count = 0
         if self.zero_coord_count > 4 and get_current_platform == 0:
-            random_movement = round(random.random())
-
-            if(random_movement == 0):
-                self.player_manager.teleu()
-            else:
-                self.player_manager.teled()
+            # random_movement = round(random.random())
+            self.player_manager.teleu()
+            # if(random_movement == 0):
+            #     self.player_manager.teleu()
+            # else:
+            #     self.player_manager.teled()
 
         if get_current_platform == '764feb49':
             print('Moving up')
             self.player_manager.teleu()
-        elif (get_current_platform == '9540508d') and (self.player_manager.x < 75):
+        elif (get_current_platform == '9540508d') and (self.player_manager.x < 75) and not 48 <= self.player_manager.x < 55:
             print('Moving up')
             self.player_manager.teleu()
-        elif (get_current_platform == '9540508d') and (self.player_manager.x >= 68):
+        elif (get_current_platform == '9540508d') and (self.player_manager.x >= 47):
             print('Moving left attack')
+            change_direction = random.randint(1, 100)
+            if 130 <= self.player_manager.x <= 170 and change_direction <= 20 and time.time() - self.direction_change_time > 16:
+                print('Changing direction to attack')
+                self.player_manager.teler_attack()
+                change_direction = time.time()
             self.player_manager.telel_attack()
         elif get_current_platform == 'a7de5437':
             print('Moving right attack')
+            change_direction = random.randint(1, 100)
+            if 90 <= self.player_manager.x <= 125 and change_direction <= 20 and time.time() - self.direction_change_time > 16:
+                print('Changing direction to attack')
+                self.player_manager.telel_attack()
+                change_direction = time.time()
             self.player_manager.teler_attack()
         elif get_current_platform == 'd275878a' and self.player_manager.x < 165:
             print('Moving right attack')
