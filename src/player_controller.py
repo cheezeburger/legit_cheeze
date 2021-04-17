@@ -1,5 +1,5 @@
 from directinput_constants import DIK_RIGHT, DIK_DOWN, DIK_LEFT, DIK_UP, DIK_ALT, DIK_D, DIK_X, DIK_COMMA, DIK_F, \
-    DIK_ALT, DIK_H, DIK_L, DIK_G, DIK_5, DIK_Y, DIK_U, DIK_LCTRL
+    DIK_ALT, DIK_H, DIK_L, DIK_G, DIK_5, DIK_Y, DIK_U, DIK_LCTRL, DIK_V
 from keystate_manager import DEFAULT_KEY_MAP
 import time, math, random
 
@@ -497,16 +497,23 @@ class PlayerController:
         time.sleep(0.1)
         self.key_mgr._direct_press(DIK_D)
         time.sleep(0.1)
+        self.key_mgr._direct_press(DIK_V)
+        time.sleep(0.1)
         self.key_mgr._direct_press(DIK_X)
         time.sleep(0.1)
-        self.key_mgr._direct_release(DIK_X)
         self.key_mgr._direct_press(DIK_X)
         time.sleep(0.1)
-        self.key_mgr._direct_release(DIK_X)
         self.key_mgr._direct_press(DIK_X)
+        time.sleep(0.1)
+        self.key_mgr._direct_press(DIK_X)
+        time.sleep(0.1)
+        self.key_mgr._direct_press(DIK_X)
+        time.sleep(0.1)
+        self.key_mgr._direct_press(DIK_V)
         time.sleep(0.1)
         self.key_mgr._direct_release(DIK_X)
         self.key_mgr._direct_release(DIK_LEFT)
+        self.key_mgr._direct_release(DIK_V)
 
     def teler_attack(self):
         self.key_mgr._direct_press(DIK_RIGHT)
@@ -515,16 +522,23 @@ class PlayerController:
         time.sleep(0.1)
         self.key_mgr._direct_press(DIK_D)
         time.sleep(0.1)
+        self.key_mgr._direct_press(DIK_V)
+        time.sleep(0.1)
         self.key_mgr._direct_press(DIK_X)
         time.sleep(0.1)
-        self.key_mgr._direct_release(DIK_X)
         self.key_mgr._direct_press(DIK_X)
         time.sleep(0.1)
-        self.key_mgr._direct_release(DIK_X)
         self.key_mgr._direct_press(DIK_X)
+        time.sleep(0.1)
+        self.key_mgr._direct_press(DIK_X)
+        time.sleep(0.1)
+        self.key_mgr._direct_press(DIK_X)
+        time.sleep(0.1)
+        self.key_mgr._direct_press(DIK_V)
         time.sleep(0.1)
         self.key_mgr._direct_release(DIK_X)
         self.key_mgr._direct_release(DIK_RIGHT)
+        self.key_mgr._direct_release(DIK_V)
 
     def dbljump_max(self):
         """Warining: is a blocking call"""
