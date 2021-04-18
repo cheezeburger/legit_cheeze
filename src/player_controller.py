@@ -414,32 +414,32 @@ class PlayerController:
         time.sleep(1)
 
     def castYoungYasha(self):
-        time.sleep(2)
+        time.sleep(1)
         self.key_mgr._direct_press(DIK_G)
         time.sleep(0.2)
         self.key_mgr._direct_release(DIK_G)
-        time.sleep(2)
+        time.sleep(1.2)
 
     def castYuki(self):
-        time.sleep(2)
+        time.sleep(1)
         self.key_mgr._direct_press(DIK_5)
         time.sleep(0.2)
         self.key_mgr._direct_release(DIK_5)
-        time.sleep(1)
+        time.sleep(1.2)
 
     def castHs(self):
         time.sleep(1)
         self.key_mgr._direct_press(DIK_Y)
         time.sleep(0.2)
         self.key_mgr._direct_release(DIK_Y)
-        time.sleep(2)
+        time.sleep(1.4)
 
     def castSi(self):
         time.sleep(1)
         self.key_mgr._direct_press(DIK_U)
         time.sleep(0.2)
         self.key_mgr._direct_release(DIK_5)
-        time.sleep(1)
+        time.sleep(1.4)
 
     def feedPet(self):
         self.key_mgr._direct_press(DIK_LCTRL)
@@ -494,21 +494,27 @@ class PlayerController:
         self.key_mgr._direct_press(DIK_LEFT)
         time.sleep(0.05)
         self.key_mgr._direct_press(self.jump_key)
-        time.sleep(0.1)
-        self.key_mgr._direct_press(DIK_D)
-        time.sleep(0.1)
+        
+        teleport_twice = random.randint(1, 100)
+        #Randomly press 1 or 2 times teleport with 10% chance
+        if teleport_twice <= 10:
+            self.key_mgr._direct_press(DIK_D)
+            time.sleep(0.1)
+            self.key_mgr._direct_press(DIK_D)
+            time.sleep(0.1)
+        else:
+            self.key_mgr._direct_press(DIK_D)
+            time.sleep(0.1)
+
         self.key_mgr._direct_press(DIK_V)
         time.sleep(0.1)
-        self.key_mgr._direct_press(DIK_X)
-        time.sleep(0.1)
-        self.key_mgr._direct_press(DIK_X)
-        time.sleep(0.1)
-        self.key_mgr._direct_press(DIK_X)
-        time.sleep(0.1)
-        self.key_mgr._direct_press(DIK_X)
-        time.sleep(0.1)
-        self.key_mgr._direct_press(DIK_X)
-        time.sleep(0.1)
+
+        attack_counts = random.randint(1, 5)
+
+        for x in range(attack_counts):
+            self.key_mgr._direct_press(DIK_X)
+            time.sleep(0.1)
+        
         self.key_mgr._direct_press(DIK_V)
         time.sleep(0.1)
         self.key_mgr._direct_release(DIK_X)
@@ -520,20 +526,26 @@ class PlayerController:
         time.sleep(0.05)
         self.key_mgr._direct_press(self.jump_key)
         time.sleep(0.1)
-        self.key_mgr._direct_press(DIK_D)
-        time.sleep(0.1)
+
+        teleport_twice = random.randint(1, 100)
+        #Randomly press 1 or 2 times teleport with 10% chance
+        if teleport_twice <= 10:
+            self.key_mgr._direct_press(DIK_D)
+            time.sleep(0.1)
+            self.key_mgr._direct_press(DIK_D)
+            time.sleep(0.1)
+        else:
+            self.key_mgr._direct_press(DIK_D)
+            time.sleep(0.1)
+
         self.key_mgr._direct_press(DIK_V)
         time.sleep(0.1)
-        self.key_mgr._direct_press(DIK_X)
-        time.sleep(0.1)
-        self.key_mgr._direct_press(DIK_X)
-        time.sleep(0.1)
-        self.key_mgr._direct_press(DIK_X)
-        time.sleep(0.1)
-        self.key_mgr._direct_press(DIK_X)
-        time.sleep(0.1)
-        self.key_mgr._direct_press(DIK_X)
-        time.sleep(0.1)
+        
+        attack_counts = random.randint(1, 5)
+        for x in range(attack_counts):
+            self.key_mgr._direct_press(DIK_X)
+            time.sleep(0.1)
+            
         self.key_mgr._direct_press(DIK_V)
         time.sleep(0.1)
         self.key_mgr._direct_release(DIK_X)
