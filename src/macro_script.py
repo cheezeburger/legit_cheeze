@@ -7,6 +7,7 @@ import rune_solver as rs
 import logging, math, time, random
 import random
 
+
 class CustomLogger:
     def __init__(self, logger_obj, logger_queue):
         self.logger_obj = logger_obj
@@ -22,11 +23,12 @@ class CustomLogger:
         if self.logger_queue:
             self.logger_queue.put(("log", " ".join([str(x) for x in args])))
 
+
 class MacroController:
     # 3rd param rune_model_dir=r"arrow_classifier_keras_gray.h5",
     def __init__(self, keymap=km.DEFAULT_KEY_MAP, log_queue=None):
 
-        #sys.excepthook = self.exception_hook
+        # sys.excepthook = self.exception_hook
 
         self.screen_capturer = sp.MapleScreenCapturer()
         logger = logging.getLogger(self.__class__.__name__)
@@ -41,12 +43,11 @@ class MacroController:
 
         self.zero_coord_count = 0
         self.logger = CustomLogger(logger, self.log_queue)
-        self.logger.debug("%s init"%self.__class__.__name__)
+        self.logger.debug("%s init" % self.__class__.__name__)
         self.screen_processor = sp.StaticImageProcessor(self.screen_capturer)
         self.terrain_analyzer = ta.PathAnalyzer()
         self.keyhandler = km.KeyboardInputManager()
         self.player_manager = pc.PlayerController(self.keyhandler, self.screen_processor, keymap)
-
 
         self.last_platform_hash = None
         self.current_platform_hash = None
@@ -80,7 +81,7 @@ class MacroController:
         self.unstick_attempts_threshold = 5
         # If unstick after this amount fails to get us on a known platform, abort abort.
 
-        self.logger.debug("%s init finished"%self.__class__.__name__)
+        self.logger.debug("%s init finished" % self.__class__.__name__)
 
         self.kishin_time = 0
         self.haku_time = 0
@@ -94,18 +95,19 @@ class MacroController:
         self.pet_feed_time = 0
 
         self.direction_change_time = 0
+        self.from_direction = None
 
     def load_and_process_platform_map(self, path="mapdata.platform"):
         retval = self.terrain_analyzer.load(path)
         self.terrain_analyzer.generate_solution_dict()
         if retval != 0:
-            self.logger.debug("Loaded platform data %s"%(path))
+            self.logger.debug("Loaded platform data %s" % (path))
         else:
-            self.logger.debug("Failed to load platform data %s, terrain_analyzer.load returned 0"%(path))
+            self.logger.debug("Failed to load platform data %s, terrain_analyzer.load returned 0" % (path))
         return retval
 
     def distance(self, x1, y1, x2, y2):
-        return math.sqrt((x1-x2)**2 + (y1-y2)**2)
+        return math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
 
     def find_current_platform(self):
         current_platform_hash = None
@@ -205,7 +207,8 @@ class MacroController:
                         time.sleep(1)
                 time.sleep(0.5)
             else:
-                self.logger.debug("could not generate path to rune platform %s from starting platform %s"%(rune_platform_hash, self.current_platform_hash))
+                self.logger.debug("could not generate path to rune platform %s from starting platform %s" % (
+                rune_platform_hash, self.current_platform_hash))
         return 0
 
     def log_skill_usage_statistics(self):
@@ -216,14 +219,13 @@ class MacroController:
         if not self.player_manager.skill_counter_time:
             self.player_manager.skill_counter_time = time.time()
         if time.time() - self.player_manager.skill_counter_time > 60:
-
-            self.logger.debug("skills casted in duration %d: %d skill/s: %f"%(int(time.time() - self.player_manager.skill_counter_time), self.player_manager.skill_cast_counter, self.player_manager.skill_cast_counter/int(time.time() - self.player_manager.skill_counter_time)))
+            self.logger.debug("skills casted in duration %d: %d skill/s: %f" % (
+            int(time.time() - self.player_manager.skill_counter_time), self.player_manager.skill_cast_counter,
+            self.player_manager.skill_cast_counter / int(time.time() - self.player_manager.skill_counter_time)))
             self.player_manager.skill_cast_counter = 0
             self.player_manager.skill_counter_time = time.time()
 
     def loop(self):
-        # self.player_manager.teled()
-        # Update Screen
         self.screen_processor.update_image(set_focus=True)
         # Update Constants
         player_minimap_pos = self.screen_processor.find_player_minimap_marker()
@@ -232,8 +234,14 @@ class MacroController:
             return -1
         self.player_manager.update(player_minimap_pos[0], player_minimap_pos[1])
 
-        self.current_platform_hash = None
+        # self.current_platform_hash = None
         get_current_platform = self.find_current_platform()
+
+        if not self.from_direction:
+            if self.player_manager.x >= 95:
+                self.from_direction = 'right'
+            else:
+                self.from_direction = 'left'
 
         # Initial Buffs
         if not self.direction_change_time:
@@ -267,14 +275,14 @@ class MacroController:
             print('Casting Yuki')
             self.yuki_time = time.time()
             self.player_manager.castYuki()
-        if not self.hs_time or time.time() - self.hs_time > 183:
-            print('Casting HS')
-            self.hs_time = time.time()
-            self.player_manager.castHs()
-        if not self.si_time or time.time() - self.si_time > 187:
-            print('Casting SI')
-            self.si_time = time.time()
-            self.player_manager.castSi()
+        # if not self.hs_time or time.time() - self.hs_time > 183:
+        #     print('Casting HS')
+        #     self.hs_time = time.time()
+        #     self.player_manager.castHs()
+        # if not self.si_time or time.time() - self.si_time > 187:
+        #     print('Casting SI')
+        #     self.si_time = time.time()
+        #     self.player_manager.castSi()
         if not self.pet_feed_time or time.time() - self.pet_feed_time > 148:
             print('Feeding pets')
             self.pet_feed_time = time.time()
@@ -284,60 +292,66 @@ class MacroController:
             self.zero_coord_count += 1
         else:
             self.zero_coord_count = 0
-        if self.zero_coord_count > 4 and get_current_platform == 0:
-            # random_movement = round(random.random())
-            self.player_manager.teleu()
-            # if(random_movement == 0):
-            #     self.player_manager.teleu()
-            # else:
-            #     self.player_manager.teled()
 
-        if get_current_platform == '764feb49':
-            print('Moving up')
+        if self.zero_coord_count > 5:
+            self.player_manager.teler_attack()
+
+        if get_current_platform == 'e2466099' and self.from_direction == 'right' and  39 <= self.player_manager.x <= 55:
+            # Bottom platform and within goin to top left range
+            print('Going up')
             self.player_manager.teleu()
-        elif (get_current_platform == '9540508d') and (self.player_manager.x < 75) and not 48 <= self.player_manager.x < 55:
-            print('Moving up')
+        elif get_current_platform == 'e2466099' and self.from_direction == 'right' and self.player_manager.x < 39:
+            print('Moving right and attack')
+            self.player_manager.teler_attack()
+        elif get_current_platform == 'e2466099' and self.from_direction == 'left' and self.player_manager.x <= 138:
+            # Bottom platform attack to right if started from left
+            print('Moving right and attack')
+            self.player_manager.teler_attack()
+        elif get_current_platform == 'e2466099' and self.from_direction == 'left' and 132 < self.player_manager.x <= 156:
+            # Bottom platform and within goin to top right range
+            print('Going up')
             self.player_manager.teleu()
-        elif (get_current_platform == '9540508d') and (self.player_manager.x >= 47):
-            print('Moving left attack')
-            change_direction = random.randint(1, 100)
-            if 130 <= self.player_manager.x <= 170 and change_direction <= 20 and time.time() - self.direction_change_time > 16:
-                print('Changing direction to attack')
-                self.player_manager.teler_attack()
-                change_direction = time.time()
+        elif get_current_platform == 'e2466099' and self.from_direction == 'left' and self.player_manager.x > 156:
+            # Out of bound at right
+            print('Moving left and attack')
             self.player_manager.telel_attack()
-        elif get_current_platform == 'a7de5437':
-            print('Moving right attack')
-            change_direction = random.randint(1, 100)
-            if 90 <= self.player_manager.x <= 125 and change_direction <= 20 and time.time() - self.direction_change_time > 16:
-                print('Changing direction to attack')
-                self.player_manager.telel_attack()
-                change_direction = time.time()
+        elif get_current_platform == 'ca3ee877' and self.from_direction == 'left' and self.player_manager.x >= 128:
+            # Top right platfrom if from left, attack to left direction
+            print('Moving left and attack')
+            self.player_manager.telel_attack()
+        elif get_current_platform == 'ca3ee877' and self.from_direction == 'left' and self.player_manager.x < 128:
+            # Top right platfrom if from left, drop within left range
+            print('Going down')
+            self.player_manager.teled()
+            self.from_direction = 'right'
+        elif get_current_platform == 'ca3ee877' and self.from_direction == 'right':
+            # Drop if my direction changed but I'm stuck at right platform
+            print('Going down')
+            self.player_manager.teled()
+        elif get_current_platform == '5c795d5e' and self.from_direction == 'left':
+            # Drop if my direction changed but I'm stuck at left platform
+            print('Going down')
+            self.player_manager.teled()
+        elif get_current_platform == 'e2466099' and self.from_direction == 'right' and self.player_manager.x > 55:
+            # Bottom platform if from right, attack left
+            print('Moving left and attack')
+            self.player_manager.telel_attack()
+        elif get_current_platform == '5c795d5e' and self.from_direction == 'right' and self.player_manager.x <= 70:
+            # Top left platform if from right, attack right
+            print('Moving right and attack')
             self.player_manager.teler_attack()
-        elif get_current_platform == 'd275878a' and self.player_manager.x < 165:
-            print('Moving right attack')
+        elif get_current_platform == '5c795d5e' and self.from_direction == 'right' and self.player_manager.x > 70:
+            # Top left platform if from right attack right
+            print('Going down')
+            self.player_manager.teled()
+            self.from_direction = 'left'
+
+        elif get_current_platform == '404a64d3' and self.from_direction == 'left':
+            print('Moving right and attack')
             self.player_manager.teler_attack()
-        elif get_current_platform == 'd275878a' and self.player_manager.x >= 165:
-            print('Moving down')
-            random_movement = round(random.random())
-
-            if (random_movement == 0):
-                self.player_manager.teled()
-            else:
-                self.player_manager.drop()
-        # self.keyhandler.single_press(dc.DIK_LCTRL, duration=2)
-
-        # #End inter-platform movement
-        #
-        # # Other buffs
-        # self.player_manager.holy_symbol()
-        # self.player_manager.hyper_body()
-        # self.player_manager.release_overload()
-        # time.sleep(0.05)
-        #
-        # # Finished
-        # self.loop_count += 1
-        # return 0
+        elif get_current_platform == '404a64d3' and self.from_direction == 'right':
+            print('Moving left and attack')
+            self.player_manager.telel_attack()
 
 
     def unstick(self):
@@ -346,7 +360,7 @@ class MacroController:
         Solution: try random stuff to attempt it to reposition it self
         :return: None
         """
-        #Method one: get off ladder
+        # Method one: get off ladder
         self.player_manager.jumpr()
         time.sleep(2)
         if self.find_current_platform():
@@ -361,4 +375,3 @@ class MacroController:
         self.logger.debug("aborted")
         if self.log_queue:
             self.log_queue.put(["stopped", None])
-
