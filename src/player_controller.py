@@ -1,5 +1,54 @@
-from directinput_constants import DIK_RIGHT, DIK_DOWN, DIK_LEFT, DIK_UP, DIK_ALT, DIK_D, DIK_X, DIK_COMMA, DIK_F, \
-    DIK_ALT, DIK_H, DIK_L, DIK_G, DIK_5, DIK_Y, DIK_U, DIK_LCTRL
+from directinput_constants import \
+    DIK_RIGHT, \
+    DIK_DOWN, \
+    DIK_LEFT, \
+    DIK_UP, \
+    DIK_A, \
+    DIK_B, \
+    DIK_C, \
+    DIK_D, \
+    DIK_E, \
+    DIK_F, \
+    DIK_G, \
+    DIK_H, \
+    DIK_I, \
+    DIK_J, \
+    DIK_K, \
+    DIK_L, \
+    DIK_M, \
+    DIK_N, \
+    DIK_O, \
+    DIK_P, \
+    DIK_Q, \
+    DIK_R, \
+    DIK_S, \
+    DIK_T, \
+    DIK_U, \
+    DIK_V, \
+    DIK_W, \
+    DIK_X, \
+    DIK_Y, \
+    DIK_Z, \
+    DIK_1, \
+    DIK_2, \
+    DIK_3, \
+    DIK_4, \
+    DIK_5, \
+    DIK_6, \
+    DIK_7, \
+    DIK_8, \
+    DIK_9, \
+    DIK_0, \
+    DIK_ALT, \
+    DIK_LCTRL, \
+    DIK_SPACE, \
+    DIK_COMMA, \
+    DIK_PGDOWN, \
+    DIK_PGUP, \
+    DIK_F9, \
+    DIK_F10, \
+    DIK_SEMICOLON, \
+    DIK_DASH
 from keystate_manager import DEFAULT_KEY_MAP
 import time, math, random
 
@@ -86,19 +135,6 @@ class PlayerController:
         self.hyper_body_delay = 1.7
 
         self.overload_stack = 0
-
-        # Initialization code for self.randomize_skill
-        self.thousand_sword_percent = 30
-        self.shield_chase_percent = 40
-        self.choices = []
-
-        for obj in range(self.thousand_sword_percent):
-            self.choices.append(1)
-        for obj in range(self.shield_chase_percent):
-            self.choices.append(2)
-
-        for obj in range(100 - len(self.choices)):
-            self.choices.append(0)
 
     def update(self, player_coords_x=None, player_coords_y=None):
         """
@@ -382,6 +418,19 @@ class PlayerController:
                     self.key_mgr._direct_release(DIK_LEFT)
                     break
 
+    def release_keys(self):
+        self.key_mgr._direct_release(DIK_UP)
+        self.key_mgr._direct_release(DIK_DOWN)
+        self.key_mgr._direct_release(DIK_LEFT)
+        self.key_mgr._direct_release(DIK_RIGHT)
+
+    def castSkill(self, key, delay, sleep_first= False):
+        if sleep_first:
+            time.sleep(delay)
+        self.key_mgr._direct_press(self.getKey(key))
+        time.sleep(delay)
+        self.key_mgr._direct_release(self.getKey(key))
+
     def castKishin(self):
         time.sleep(1.5)
         self.key_mgr._direct_press(DIK_F)
@@ -449,31 +498,146 @@ class PlayerController:
         self.key_mgr._direct_release(DIK_LCTRL)
         time.sleep(1)
 
+    def walkl(self):
+        self.key_mgr._direct_press(DIK_LEFT)
+        time.sleep(0.23)
+        self.key_mgr._direct_release(DIK_LEFT)
+
+    def walkjl(self):
+        self.key_mgr._direct_press(DIK_LEFT)
+        time.sleep(0.5)
+        self.key_mgr._direct_press(DIK_SPACE)
+        time.sleep(0.2)
+        self.key_mgr._direct_release(DIK_LEFT)
+        self.key_mgr._direct_release(DIK_SPACE)
+
     def telel(self):
         self.key_mgr._direct_press(DIK_LEFT)
-        time.sleep(0.05)
-        self.key_mgr._direct_press(self.jump_key)
-        time.sleep(0.1)
+        time.sleep(0.5)
         self.key_mgr._direct_press(DIK_D)
+        time.sleep(0.2)
+        self.key_mgr._direct_release(DIK_LEFT)
+        self.key_mgr._direct_release(DIK_D)
+
+    def telejl(self):
+        self.key_mgr._direct_press(DIK_LEFT)
+        time.sleep(0.5)
+        self.key_mgr._direct_press(DIK_D)
+        time.sleep(0.2)
+        self.key_mgr._direct_press(self.jump_key)
         time.sleep(0.1)
         self.key_mgr._direct_release(DIK_LEFT)
         self.key_mgr._direct_release(self.jump_key)
         self.key_mgr._direct_release(DIK_D)
 
+    def telecastl(self):
+        self.key_mgr._direct_press(DIK_LEFT)
+        time.sleep(0.1)
+        self.key_mgr._direct_press(DIK_G)
+        time.sleep(0.05)
+        self.key_mgr._direct_press(DIK_X)
+        time.sleep(0.05)
+        self.key_mgr._direct_press(DIK_D)
+        time.sleep(0.1)
+        self.key_mgr._direct_press(DIK_X)
+        time.sleep(0.05)
+
+        self.key_mgr._direct_release(DIK_LEFT)
+        self.key_mgr._direct_release(DIK_G)
+        self.key_mgr._direct_release(DIK_D)
+        self.key_mgr._direct_release(DIK_X)
+
+    def backflip_attackl(self, key):
+        self.key_mgr._direct_press(DIK_LEFT)
+        time.sleep(0.2)
+        self.key_mgr._direct_press(self.jump_key)
+        time.sleep(0.3)
+        self.key_mgr._direct_release(DIK_LEFT)
+        time.sleep(0.1)
+        self.key_mgr._direct_press(DIK_RIGHT)
+        time.sleep(0.1)
+        self.key_mgr._direct_release(DIK_RIGHT)
+        self.key_mgr._direct_press(self.getKey(key))
+        time.sleep(0.1)
+        self.key_mgr._direct_release(self.getKey(key))
+        self.key_mgr._direct_release(self.jump_key)
+
+    def walkr(self):
+        self.key_mgr._direct_press(DIK_RIGHT)
+        time.sleep(0.23)
+        self.key_mgr._direct_release(DIK_RIGHT)
+
+    def walkjr(self):
+        self.key_mgr._direct_press(DIK_RIGHT)
+        time.sleep(0.5)
+        self.key_mgr._direct_press(DIK_SPACE)
+        time.sleep(0.2)
+        self.key_mgr._direct_release(DIK_RIGHT)
+        self.key_mgr._direct_release(DIK_SPACE)
+
     def teler(self):
         self.key_mgr._direct_press(DIK_RIGHT)
-        time.sleep(0.05)
-        self.key_mgr._direct_press(self.jump_key)
-        time.sleep(0.1)
+        time.sleep(0.5)
         self.key_mgr._direct_press(DIK_D)
+        time.sleep(0.2)
+        self.key_mgr._direct_release(DIK_RIGHT)
+        self.key_mgr._direct_release(DIK_D)
+
+    def telejr(self):
+        self.key_mgr._direct_press(DIK_RIGHT)
+        time.sleep(0.5)
+        self.key_mgr._direct_press(DIK_D)
+        time.sleep(0.2)
+        self.key_mgr._direct_press(self.jump_key)
         time.sleep(0.1)
         self.key_mgr._direct_release(DIK_RIGHT)
         self.key_mgr._direct_release(self.jump_key)
         self.key_mgr._direct_release(DIK_D)
 
-    def teleu(self):
-        self.key_mgr._direct_press(self.jump_key)
+    def telecastr(self):
+        self.key_mgr._direct_press(DIK_RIGHT)
+        time.sleep(0.1)
+        self.key_mgr._direct_press(DIK_G)
         time.sleep(0.05)
+        self.key_mgr._direct_press(DIK_X)
+        time.sleep(0.05)
+        self.key_mgr._direct_press(DIK_D)
+        time.sleep(0.1)
+        self.key_mgr._direct_press(DIK_X)
+        time.sleep(0.05)
+
+        self.key_mgr._direct_release(DIK_RIGHT)
+        self.key_mgr._direct_release(DIK_G)
+        self.key_mgr._direct_release(DIK_D)
+        self.key_mgr._direct_release(DIK_X)
+
+    def backflip_attackr(self, key):
+        self.key_mgr._direct_press(DIK_RIGHT)
+        time.sleep(0.2)
+        self.key_mgr._direct_press(self.jump_key)
+        time.sleep(0.3)
+        self.key_mgr._direct_release(DIK_RIGHT)
+        time.sleep(0.1)
+        self.key_mgr._direct_press(DIK_LEFT)
+        time.sleep(0.1)
+        self.key_mgr._direct_release(DIK_LEFT)
+        self.key_mgr._direct_press(self.getKey(key))
+        time.sleep(0.1)
+        self.key_mgr._direct_release(self.getKey(key))
+        self.key_mgr._direct_release(self.jump_key)
+
+
+    def teleu(self):
+        self.key_mgr._direct_press(DIK_UP)
+        time.sleep(0.05)
+        self.key_mgr._direct_press(DIK_D)
+        time.sleep(0.1)
+        self.key_mgr._direct_release(DIK_UP)
+        self.key_mgr._direct_release(DIK_D)
+
+    def teleju(self):
+        self.key_mgr._direct_press(self.jump_key)
+        time.sleep(0.30)
         self.key_mgr._direct_press(DIK_UP)
         time.sleep(0.05)
         self.key_mgr._direct_press(DIK_D)
@@ -484,47 +648,95 @@ class PlayerController:
 
     def teled(self):
         self.key_mgr._direct_press(DIK_DOWN)
-        time.sleep(0.05)
+        time.sleep(0.1)
         self.key_mgr._direct_press(DIK_D)
         time.sleep(0.1)
-        self.key_mgr._direct_release(DIK_DOWN)
         self.key_mgr._direct_release(DIK_D)
+        self.key_mgr._direct_release(DIK_DOWN)
 
-    def telel_attack(self):
-        self.key_mgr._direct_press(DIK_LEFT)
+    def telejd(self):
+        self.key_mgr._direct_press(DIK_DOWN)
         time.sleep(0.05)
         self.key_mgr._direct_press(self.jump_key)
+        time.sleep(0.35)
+        self.key_mgr._direct_press(DIK_D)
+        time.sleep(0.1)
+        self.key_mgr._direct_release(self.jump_key)
+        self.key_mgr._direct_release(DIK_D)
+        self.key_mgr._direct_release(DIK_DOWN)
+    def telel_attack(self):
+        self.key_mgr._direct_press(DIK_LEFT)
         time.sleep(0.1)
         self.key_mgr._direct_press(DIK_D)
         time.sleep(0.1)
         self.key_mgr._direct_press(DIK_X)
         time.sleep(0.1)
+
         self.key_mgr._direct_release(DIK_X)
-        self.key_mgr._direct_press(DIK_X)
+        self.key_mgr._direct_release(DIK_D)
+        self.key_mgr._direct_release(DIK_LEFT)
+
+    def telejl_attack(self):
+        self.key_mgr._direct_press(DIK_LEFT)
+        time.sleep(0.05)
+        self.key_mgr._direct_press(DIK_D)
         time.sleep(0.1)
-        self.key_mgr._direct_release(DIK_X)
-        self.key_mgr._direct_press(DIK_X)
+        self.key_mgr._direct_press(self.jump_key)
         time.sleep(0.1)
+
+        flip_right_attack_chance = random.randint(0, 100)
+
+        if flip_right_attack_chance <= 20:
+            print('Casting chance attack (attack opposite direction)')
+            self.key_mgr._direct_release(DIK_LEFT)
+            time.sleep(0.1)
+            self.key_mgr._direct_press(DIK_RIGHT)
+            time.sleep(0.1)
+            self.key_mgr._direct_press(DIK_X)
+            time.sleep(0.1)
+            self.key_mgr._direct_release(DIK_RIGHT)
+            self.key_mgr._direct_press(DIK_LEFT)
+
+        self.key_mgr._direct_press(DIK_X)
         self.key_mgr._direct_release(DIK_X)
+        self.key_mgr._direct_release(self.jump_key)
         self.key_mgr._direct_release(DIK_LEFT)
 
     def teler_attack(self):
         self.key_mgr._direct_press(DIK_RIGHT)
-        time.sleep(0.05)
-        self.key_mgr._direct_press(self.jump_key)
         time.sleep(0.1)
         self.key_mgr._direct_press(DIK_D)
         time.sleep(0.1)
         self.key_mgr._direct_press(DIK_X)
-        time.sleep(0.1)
         self.key_mgr._direct_release(DIK_X)
-        self.key_mgr._direct_press(DIK_X)
-        time.sleep(0.1)
-        self.key_mgr._direct_release(DIK_X)
-        self.key_mgr._direct_press(DIK_X)
-        time.sleep(0.1)
-        self.key_mgr._direct_release(DIK_X)
+        self.key_mgr._direct_release(DIK_D)
         self.key_mgr._direct_release(DIK_RIGHT)
+
+    def telejr_attack(self):
+        self.key_mgr._direct_press(DIK_RIGHT)
+        time.sleep(0.05)
+        self.key_mgr._direct_press(DIK_D)
+        time.sleep(0.1)
+        self.key_mgr._direct_press(self.jump_key)
+        time.sleep(0.1)
+
+        flip_right_attack_chance = random.randint(0, 100)
+
+        if flip_right_attack_chance <= 20:
+            print('Casting chance attack (attack opposite direction)')
+            self.key_mgr._direct_release(DIK_RIGHT)
+            time.sleep(0.1)
+            self.key_mgr._direct_press(DIK_LEFT)
+            time.sleep(0.1)
+            self.key_mgr._direct_press(DIK_X)
+            time.sleep(0.1)
+            self.key_mgr._direct_release(DIK_LEFT)
+            self.key_mgr._direct_press(DIK_RIGHT)
+
+        self.key_mgr._direct_press(DIK_X)
+        self.key_mgr._direct_release(DIK_X)
+        self.key_mgr._direct_release(self.jump_key)
+        self.key_mgr._direct_release(DIK_LEFT)
 
     def dbljump_max(self):
         """Warining: is a blocking call"""
@@ -648,92 +860,6 @@ class PlayerController:
         time.sleep(abs(0.1 + self.random_duration()))
         self.key_mgr._direct_release(self.jump_key)
 
-    def moonlight_slash(self):
-
-        self.key_mgr.single_press(self.keymap["moonlight_slash"])
-        self.overload_stack += 1
-        self.skill_cast_counter += 1
-        time.sleep(self.moonlight_slash_delay)
-
-    def thousand_sword(self):
-        if time.time() - self.last_thousand_sword_time > self.thousand_sword_cooldown:
-            self.update()
-            if self.distance((self.x, self.y), self.last_thousand_sword_coords if self.last_thousand_sword_coords else (
-            1000, 1000)) >= self.min_thousand_sword_distance or \
-                    time.time() - self.last_thousand_sword_time > self.thousand_sword_cooldown * 3:
-                self.key_mgr.single_press(self.keymap["thousand_sword"],
-                                          additional_duration=abs(self.random_duration()))
-                self.last_thousand_sword_time = time.time()
-                self.skill_cast_counter += 1
-                self.last_thousand_sword_coords = (self.x, self.y)
-                self.overload_stack += 5
-                print("thousand sword cast")
-                time.sleep(self.thousand_sword_delay)
-
-    def shield_chase(self):
-        if time.time() - self.last_shield_chase_time > self.shield_chase_cooldown:
-            if self.distance((self.x, self.y), self.last_shield_chase_coords if self.last_shield_chase_coords else (
-            1000, 1000)) >= self.min_shield_chase_distance or \
-                    time.time() - self.last_shield_chase_time > self.shield_chase_cooldown * 3:
-                self.update()
-                cast_yccords = self.y
-                self.key_mgr.single_press(self.keymap["shield_chase"], additional_duration=abs(self.random_duration()))
-                """self.key_mgr.single_press(DIK_ALT)
-                self.update()
-                after_cast_ycoords = self.y
-                print("shield chase cast")
-                if cast_yccords == after_cast_ycoords:
-                    #  Shield chase has been used.
-                    self.last_shield_chase_time = time.time()
-                    self.last_shield_chase_coords = (self.x, self.y)
-                    self.skill_cast_counter += 1
-                    time.sleep(self.shield_chase_delay - 0.2)
-                    print("shield chase cast - actually casted")
-                    return 0
-                else:
-                    # No monsters nearby, was not used
-                    print("shield chase cast - not casted")
-                    time.sleep(0.2)
-                    return 1"""
-                # Disabled skill usage check for now
-                self.skill_cast_counter += 1
-                return 0
-
-    def holy_symbol(self):
-        if time.time() - self.last_holy_symbol_time > self.holy_symbol_cooldown + random.randint(0, 14):
-            self.key_mgr.single_press(self.keymap["holy_symbol"], additional_duration=abs(self.random_duration()))
-            self.skill_cast_counter += 1
-            self.last_holy_symbol_time = time.time()
-            time.sleep(self.holy_symbol_delay)
-
-    def hyper_body(self):
-        if time.time() - self.last_hyper_body_time > self.hyper_body_cooldown + random.randint(0, 14):
-            self.key_mgr.single_press(self.keymap["hyper_body"], additional_duration=abs(self.random_duration()))
-            self.skill_cast_counter += 1
-            self.last_hyper_body_time = time.time()
-            time.sleep(self.hyper_body_delay)
-
-    def release_overload(self):
-        if self.overload_stack >= 18 + random.randint(0, 12):
-            self.key_mgr.single_press(self.keymap["release_overload"], additional_duration=abs(self.random_duration()))
-            self.skill_cast_counter += 1
-            self.overload_stack = 0
-            time.sleep(0.1)
-
-    def randomize_skill(self):
-        selection = random.choice(self.choices)
-        if selection == 0:
-            return 0
-        elif selection == 1:
-            self.thousand_sword()
-            return 1
-        elif selection == 2:
-            retval = self.shield_chase()
-            if retval == 0:
-                return 2
-            else:
-                return 0
-
     def random_duration(self, gen_range=0.1, digits=2):
         """
         returns a random number x where -gen_range<=x<=gen_range rounded to digits number of digits under floating points
@@ -745,3 +871,61 @@ class PlayerController:
         if random.choice([1, -1]) == -1:
             d *= -1
         return d
+
+    def getKey(self, key):
+        getKey = {  # tkinter event keysym to dik key code coversion table
+            "ALT_L": DIK_ALT,
+            "CONTROL_L": DIK_LCTRL,
+            "space": DIK_SPACE,
+            "comma": DIK_COMMA,
+            "pgdown": DIK_PGDOWN,
+            "pgup": DIK_PGUP,
+            "a": DIK_A,
+            "b": DIK_B,
+            "c": DIK_C,
+            "d": DIK_D,
+            "e": DIK_E,
+            "f": DIK_F,
+            "g": DIK_G,
+            "h": DIK_H,
+            "i": DIK_I,
+            "j": DIK_J,
+            "k": DIK_K,
+            "l": DIK_L,
+            "m": DIK_M,
+            "n": DIK_N,
+            "o": DIK_O,
+            "p": DIK_P,
+            "q": DIK_Q,
+            "r": DIK_R,
+            "s": DIK_S,
+            "t": DIK_T,
+            "u": DIK_U,
+            "v": DIK_V,
+            "w": DIK_W,
+            "x": DIK_X,
+            "y": DIK_Y,
+            "z": DIK_Z,
+            "1": DIK_1,
+            "2": DIK_2,
+            "3": DIK_3,
+            "4": DIK_4,
+            "5": DIK_5,
+            "6": DIK_6,
+            "7": DIK_7,
+            "8": DIK_8,
+            "9": DIK_9,
+            "0": DIK_0,
+            "up": DIK_UP,
+            "down": DIK_DOWN,
+            "left": DIK_LEFT,
+            "right": DIK_RIGHT,
+
+            "-": DIK_DASH,
+            "F9": DIK_F9,
+            "F10": DIK_F10,
+            ";": DIK_SEMICOLON
+        }
+
+        return getKey[key]
+

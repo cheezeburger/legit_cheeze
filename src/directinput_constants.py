@@ -42,7 +42,11 @@ DIK_X = 0x2D
 DIK_Y = 0x15
 DIK_Z = 0x2c
 
+DIK_F9 = 0x43
+DIK_F10 = 0x44
+DIK_DASH = 0x0C
 DIK_COMMA = 0x33
+DIK_SEMICOLON = 0x27
 
 DIK_LEFT = 0xCB
 DIK_RIGHT = 0xCD
@@ -51,6 +55,9 @@ DIK_DOWN = 0xD0
 
 DIK_ALT = 0xB8
 DIK_SPACE = 0x39
+
+DIK_PGDOWN = 0xD1
+DIK_PGUP = 0xC9
 
 DIK_NUMLOCK = 0x45
 
@@ -100,5 +107,10 @@ keysym_map = {  # tkinter event keysym to dik key code coversion table
     "7": DIK_7,
     "8": DIK_8,
     "9": DIK_9,
-    "0": DIK_0
+    "0": DIK_0,
+
+    "-": DIK_DASH,
+    "F9": DIK_F9,
+    "F10": DIK_F10,
+    ";": DIK_SEMICOLON
 }
