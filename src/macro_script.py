@@ -484,12 +484,13 @@ class MacroController:
                         self.player_manager.teleju()
                         return
 
-                self.attack_right()
+                if self.player_manager.x <= 177:
+                    self.attack_right()
 
-                if not self.hammer_time and self.current_platform_hash == self.bottom_plat or \
-                    time.time() - self.hammer_time > 13 and self.current_platform_hash == self.bottom_plat:
-                    self.player_manager.backflip_attackr('v')
-                    self.hammer_time = time.time()
+                    if not self.hammer_time and self.current_platform_hash == self.bottom_plat or \
+                        time.time() - self.hammer_time > 13 and self.current_platform_hash == self.bottom_plat:
+                        self.player_manager.backflip_attackr('v')
+                        self.hammer_time = time.time()
 
             elif self.current_platform_hash == self.rest_plat or self.zero_coord_count >= 5:
                 """
