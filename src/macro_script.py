@@ -824,7 +824,7 @@ class MacroController:
             elif self.next_drop_range:
                 self.player_manager.telejd()
 
-        if self.player_manager.x >= 177 and self.current_platform_hash == self.bottom_plat:
+        if self.player_manager.x >= 182 and self.current_platform_hash == self.bottom_plat:
             """
             Additional out of bound check
             """
