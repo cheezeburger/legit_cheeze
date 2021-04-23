@@ -457,14 +457,14 @@ class MacroController:
                 #     """
                 #     self.player_manager.release_keys()
                 #     return
-                if self.player_manager.x >= self.next_up_range:
-                    if self.player_manager.x >= 177:
-                        """
-                        Additional out of bound check
-                        """
-                        self.player_manager.release_keys()
-                        self.player_manager.jumpl()
-                        return
+                if self.player_manager.x >= self.next_up_range and self.player_manager.x < 177:
+                    # if self.player_manager.x >= 177:
+                    #     """
+                    #     Additional out of bound check
+                    #     """
+                    #     self.player_manager.release_keys()
+                    #     self.player_manager.jumpl()
+                    #     return
                     """
                     Go up at right side of the map with 2 available modes
                     0: Teleport jump up
@@ -822,6 +822,13 @@ class MacroController:
             elif self.next_drop_range:
                 self.player_manager.telejd()
 
+        if self.player_manager.x >= 177 and self.current_platform_hash == self.bottom_plat:
+            """
+            Additional out of bound check
+            """
+            self.player_manager.release_keys()
+            self.player_manager.jumpl()
+            return
         # if self.player_manager.x >= 178 and self.current_platform_hash == self.bottom_plat:
         #     """
         #     Go left if go out of bound (right)
