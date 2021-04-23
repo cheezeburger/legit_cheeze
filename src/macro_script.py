@@ -592,16 +592,19 @@ class MacroController:
             1 -> Walk right
             """
             walk_movement_choice = random.randint(0, 1)
-
+            self.player_manager.release_keys()
             if walk_movement_choice:
+                print('Going away from portal... walking left.')
                 self.player_manager.walkr()
             else:
+                print('Going away from portal... walking right.')
                 self.player_manager.walkl()
         elif 179 <= self.player_manager.x <= 182:
             """
             # Right portal x(179, 182)
             If within right portal range, only walk left sice platform is on left
             """
+            self.player_manager.release_keys()
             self.player_manager.walkl()
 
     def go_to_rest_plat(self):
@@ -820,7 +823,7 @@ class MacroController:
                 self.player_manager.teleju()
 
         if self.current_action != 'resting' and (
-                self.zero_coord_count >= 5 or self.current_platform_hash == self.rest_plat):
+                self.zero_coord_count >= 7 or self.current_platform_hash == self.rest_plat):
             print("Trying to unstuck from resting platform")
             self.player_manager.release_keys()
             if self.next_up_range:
@@ -833,7 +836,7 @@ class MacroController:
             Additional out of bound check
             """
             self.player_manager.release_keys()
-            self.player_manager.jumpl()
+            self.player_manager.telel()
             return
         # if self.player_manager.x >= 178 and self.current_platform_hash == self.bottom_plat:
         #     """

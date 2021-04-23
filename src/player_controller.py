@@ -542,7 +542,7 @@ class PlayerController:
 
     def walkl(self):
         self.key_mgr._direct_press(DIK_LEFT)
-        time.sleep(0.23)
+        time.sleep(0.21)
         self.key_mgr._direct_release(DIK_LEFT)
 
     def walkjl(self):
@@ -606,7 +606,7 @@ class PlayerController:
 
     def walkr(self):
         self.key_mgr._direct_press(DIK_RIGHT)
-        time.sleep(0.23)
+        time.sleep(0.21)
         self.key_mgr._direct_release(DIK_RIGHT)
 
     def walkjr(self):
