@@ -458,12 +458,13 @@ class MacroController:
                 #     self.player_manager.release_keys()
                 #     return
                 if self.player_manager.x >= self.next_up_range:
-                    # if self.player_manager.x >= 177:
-                    #     """
-                    #     Additional out of bound check
-                    #     """
-                    #     self.reinitialize_platform_movement()
-                    #     return
+                    if self.player_manager.x >= 177:
+                        """
+                        Additional out of bound check
+                        """
+                        self.player_manager.release_keys()
+                        self.player_manager.jumpl()
+                        return
                     """
                     Go up at right side of the map with 2 available modes
                     0: Teleport jump up
@@ -799,7 +800,6 @@ class MacroController:
         self.player_manager.release_keys()
 
     def unstuck(self, randomize=False):
-        self.player_manager.release_keys()
         if randomize:
             """
             Gets called when player starts bot from resting platform
@@ -816,6 +816,7 @@ class MacroController:
         if self.current_action != 'resting' and (
                 self.zero_coord_count >= 5 or self.current_platform_hash == self.rest_plat):
             print("Trying to unstuck from resting platform")
+            self.player_manager.release_keys()
             if self.next_up_range:
                 self.player_manager.teleu()
             elif self.next_drop_range:
