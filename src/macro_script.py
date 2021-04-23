@@ -451,12 +451,13 @@ class MacroController:
                     return
                 # if 72 <= self.player_manager.x <= 76 or 179 <= self.player_manager.x <= 182:
                 #     self.go_away_from_portal()
-                # if self.player_manager.x >= 177:
-                #     """
-                #     Character went out of right bound
-                #     """
-                #     self.player_manager.release_keys()
-                #     return
+                if self.player_manager.x >= 177:
+                    """
+                    Character went out of right bound
+                    """
+                    self.player_manager.release_keys()
+                    self.player_manager.jumpl()
+                    return
                 if self.player_manager.x >= self.next_up_range and self.player_manager.x < 177:
                     if self.player_manager.x >= 177:
                         """
