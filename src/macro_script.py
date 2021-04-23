@@ -327,12 +327,12 @@ class MacroController:
             print('Casting SE')
             self.se_time = time.time()
             self.player_manager.castSkill(';', 0.5, sleep_first=True)
-        if not self.pet_feed_time or time.time() - self.pet_feed_time > 148:
+        if not self.pet_feed_time or time.time() - self.pet_feed_time > 86:
             print('Feeding pets')
             self.pet_feed_time = time.time()
             self.player_manager.castSkill('8', 0.2, sleep_first=True)
             self.player_manager.castSkill('8', 0.2, sleep_first=True)
-        if not self.mana_pot_time or time.time() - self.mana_pot_time > 200:
+        if not self.mana_pot_time or time.time() - self.mana_pot_time > 70:
             print('Mana pot')
             self.mana_pot_time = time.time()
             self.player_manager.castSkill('CONTROL_L', 0.1, sleep_first=True)
@@ -360,7 +360,9 @@ class MacroController:
 
         if self.attack_direction == 'left':
             self.go_away_from_portal()
-            self.player_manager.walk('left')
+
+            if self.current_platform_hash != self.rest_plat or self.zero_coord_count <= 5:
+                self.player_manager.walk('left')
 
             if self.current_platform_hash == self.top_right_plat or self.current_platform_hash == self.top_left_plat:
                 if not self.next_drop_range:
@@ -420,7 +422,9 @@ class MacroController:
 
         elif self.attack_direction == 'right':
             self.go_away_from_portal()
-            self.player_manager.walk('right')
+
+            if self.player_manager.x < 182:
+                self.player_manager.walk('right')
 
             if self.current_platform_hash == self.top_right_plat or self.current_platform_hash == self.top_left_plat:
                 if not self.next_drop_range:
