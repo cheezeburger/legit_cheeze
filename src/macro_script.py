@@ -110,6 +110,7 @@ class MacroController:
         self.current_action = 'attack'
         self.next_drop_range = None
         self.next_up_range = None
+        self.existing_arrow_key = None
 
         # Resting Config
         self.last_rest = None
@@ -264,6 +265,7 @@ class MacroController:
             self.zero_coord_count = 0
 
         self.reinitialize_platform_movement()
+        self.unstuck()
 
         # =========Resting Check=========
         if not self.next_rest:
@@ -276,15 +278,6 @@ class MacroController:
             print("Next rest in", "{:.2f}".format((next_rest_seconds / 60)), "minutes for", rest_seconds,
                   'seconds. Time:',
                   time.strftime("%H:%M:%S", time.localtime(self.next_rest)))
-        # if time.time() >= self.next_rest and (self.current_platform_hash != self.top_left_plat) and \
-        #         (self.current_platform_hash != self.top_right_plat) and \
-        #         (self.current_platform_hash != self.bottom_plat) and \
-        #         (self.zero_coord_count > 3 or self.current_platform_hash == self.rest_plat):
-        #     """
-        #     Reached resting platform
-        #     Using all other platforms to check since resting platform coord is hard to detect
-        #     """
-        #     return
         if time.time() >= self.next_rest and self.current_action != 'resting':
             """
             Time to rest
@@ -342,16 +335,14 @@ class MacroController:
         if not self.mana_pot_time or time.time() - self.mana_pot_time > 200:
             print('Mana pot')
             self.mana_pot_time = time.time()
-            self.player_manager.castSkill('8', 0.1, sleep_first=True)
             self.player_manager.castSkill('CONTROL_L', 0.1, sleep_first=True)
-
-        if (not self.grim_reaper_time and (
-                85 <= self.player_manager.x <= 120 and self.current_platform_hash == self.bottom_plat)) or \
+        if not self.grim_reaper_time and (
+                85 <= self.player_manager.x <= 120 and self.current_platform_hash == self.bottom_plat) or \
                 (time.time() - self.grim_reaper_time > 101) and \
                 (85 <= self.player_manager.x <= 120 and self.current_platform_hash == self.bottom_plat):
             print('Casting grim reaper')
             self.grim_reaper_time = time.time()
-            self.player_manager.castSkill('y', 2)
+            self.player_manager.castSkill('y', 0.5, sleep_first=True)
 
         if not self.genesis_time and (
                 110 <= self.player_manager.x <= 163 and self.current_platform_hash == self.bottom_plat) or \
@@ -361,12 +352,16 @@ class MacroController:
             self.genesis_time = time.time()
             self.player_manager.castSkill('f', 0.5, sleep_first=True)
 
+
         # =========Attack Section=========
         """Do not proceed beyond this section if mode is not attack"""
         if self.current_action != 'attack':
             return
 
         if self.attack_direction == 'left':
+            self.go_away_from_portal()
+            self.player_manager.walk('left')
+
             if self.current_platform_hash == self.top_right_plat or self.current_platform_hash == self.top_left_plat:
                 if not self.next_drop_range:
                     """
@@ -375,51 +370,58 @@ class MacroController:
                     Choose where to drop on the left
                     """
                     self.next_drop_range = random.randint(59, 69)
+                    return
                 if self.player_manager.x <= self.next_drop_range:
                     """
                     Drop if within range
                     """
                     self.move_down()
-
+                    return
                     # self.reinitialize_platform_movement()
-                else:
-                    self.attack_left()
-            elif self.current_platform_hash == self.bottom_plat:
+
+                self.attack_left()
+            if self.current_platform_hash == self.bottom_plat:
                 if not self.next_up_range:
                     """
                     Initialize next go to top platform range
                     #Possible going up range x(59-94):
                     Choose where to drop on the left
                     """
-
                     self.next_up_range = random.randint(59, 94)
-                if 72 <= self.player_manager.x <= 76 or 179 <= self.player_manager.x <= 182:
-                    self.go_away_from_portal()
-
-                if self.player_manager.x >= 177:
-                    """
-                    Character went out of right bound
-                    """
-                    self.player_manager.telel_attack()
-                elif self.player_manager.x <= self.next_up_range:
+                    return
+                # if self.player_manager.x >= 177:
+                #     """
+                #     Character went out of right bound
+                #     """
+                #     self.player_manager.telel_attack()
+                if self.player_manager.x <= self.next_up_range:
                     """
                     Character is within going up range
                     """
+                    print("Going up to top left platform")
+                    self.player_manager.release_keys()
                     self.player_manager.teleju()
-                    # self.reinitialize_platform_movement()
-                elif self.current_platform_hash == self.rest_plat or self.zero_coord_count >= 5:
+                    return
+                if self.current_platform_hash == self.rest_plat or self.zero_coord_count >= 5:
                     """
                     If character starts at resting platform, init direction to top or bottom
                     """
+                    self.player_manager.release_keys()
                     self.unstuck(randomize=True)
-                else:
-                    self.attack_left()
+                    return
 
-                    if not self.hammer_time and self.current_platform_hash == self.bottom_plat or \
-                        time.time() - self.hammer_time > 13 and self.current_platform_hash == self.bottom_plat:
-                        self.player_manager.backflip_attackl('v')
-                        self.hammer_time = time.time()
+                self.attack_left()
+
+                if not self.hammer_time and self.current_platform_hash == self.bottom_plat or \
+                    time.time() - self.hammer_time > 13 and self.current_platform_hash == self.bottom_plat:
+                    self.player_manager.release_keys()
+                    self.player_manager.backflip_attackl('v')
+                    self.hammer_time = time.time()
+
         elif self.attack_direction == 'right':
+            self.go_away_from_portal()
+            self.player_manager.walk('right')
+
             if self.current_platform_hash == self.top_right_plat or self.current_platform_hash == self.top_left_plat:
                 if not self.next_drop_range:
                     """
@@ -434,8 +436,9 @@ class MacroController:
                     Drop if within range
                     """
                     self.move_down()
-                else:
-                    self.attack_right()
+                    return
+
+                self.attack_right()
             elif self.current_platform_hash == self.bottom_plat:
                 if not self.next_up_range:
                     """
@@ -445,20 +448,22 @@ class MacroController:
                     """
 
                     self.next_up_range = random.randint(151, 175)
-                if 72 <= self.player_manager.x <= 76 or 179 <= self.player_manager.x <= 182:
-                    self.go_away_from_portal()
-                if self.player_manager.x >= 177:
-                    """
-                    Character went out of right bound
-                    """
-                    self.reinitialize_platform_movement()
-                elif self.player_manager.x >= self.next_up_range:
-                    if self.player_manager.x >= 177:
-                        """
-                        Additional out of bound check
-                        """
-                        self.reinitialize_platform_movement()
-                        return
+                    return
+                # if 72 <= self.player_manager.x <= 76 or 179 <= self.player_manager.x <= 182:
+                #     self.go_away_from_portal()
+                # if self.player_manager.x >= 177:
+                #     """
+                #     Character went out of right bound
+                #     """
+                #     self.player_manager.release_keys()
+                #     return
+                if self.player_manager.x >= self.next_up_range:
+                    # if self.player_manager.x >= 177:
+                    #     """
+                    #     Additional out of bound check
+                    #     """
+                    #     self.reinitialize_platform_movement()
+                    #     return
                     """
                     Go up at right side of the map with 2 available modes
                     0: Teleport jump up
@@ -468,23 +473,28 @@ class MacroController:
 
                     if go_up_from_right_choice:
                         print('Going up using hidden portal')
+                        self.player_manager.release_keys()
                         self.use_hidden_portal(170, 171)
+
+                        return
                     else:
                         print('Going up by teleporting jump up')
+                        self.player_manager.release_keys()
                         self.player_manager.teleju()
-                else:
-                    self.attack_right()
+                        return
 
-                    if not self.hammer_time and self.current_platform_hash == self.bottom_plat or \
-                        time.time() - self.hammer_time > 13 and self.current_platform_hash == self.bottom_plat:
-                        self.player_manager.backflip_attackr('v')
-                        self.hammer_time = time.time()
+                self.attack_right()
+
+                if not self.hammer_time and self.current_platform_hash == self.bottom_plat or \
+                    time.time() - self.hammer_time > 13 and self.current_platform_hash == self.bottom_plat:
+                    self.player_manager.backflip_attackr('v')
+                    self.hammer_time = time.time()
+
             elif self.current_platform_hash == self.rest_plat or self.zero_coord_count >= 5:
                 """
                 If character starts at resting platform, init direction to top or bottom
                 """
                 self.unstuck(randomize=True)
-        self.unstuck()
         # If current direction should slash from left to righ
 
         # # Initial Buffs
@@ -647,15 +657,6 @@ class MacroController:
                 elif self.current_platform_hash == self.bottom_plat:
                     self.player_manager.teleu()
 
-    # def reinitialize_platform_movement(self):
-    #     self.next_drop_range = None
-    #     self.next_up_range = None
-    #
-    #     if self.attack_direction is 'left':
-    #         self.attack_direction = 'right'
-    #     else:
-    #         self.attack_direction = 'left'
-
     def reinitialize_platform_movement(self):
         if self.current_action == 'resting':
             """Don't do anything if resting"""
@@ -663,9 +664,12 @@ class MacroController:
 
         if not self.attack_direction:
             if self.player_manager.x <= 110:
+                print('Attack direction initialized to right')
                 self.attack_direction = 'right'
             else:
+                print('Attack direction initialized to left')
                 self.attack_direction = 'left'
+
         """
         ~1% chance to randomize moves
         """
@@ -677,19 +681,24 @@ class MacroController:
         randomize_drop = random.randint(1, 150)
 
         if randomize_mode <= 1:
-            print("Move randomzied!")
+
             if self.attack_direction == 'left':
+                print("Move randomzied -> Right!")
                 self.attack_direction = 'right'
             elif self.attack_direction == 'right':
+                print("Move randomzied -> left!")
                 self.attack_direction = 'left'
 
             self.next_drop_range = None
             self.next_up_range = None
 
+            self.player_manager.release_keys()
+
         if randomize_drop <= 1 and \
                 (self.current_platform_hash == self.top_left_plat or self.current_platform_hash == self.top_right_plat):
             print("Dropping randomly!")
             self.move_down()
+            self.player_manager.release_keys()
 
         if self.next_drop_range and self.zero_coord_count <= 5 and self.current_platform_hash == self.bottom_plat:
             """
@@ -701,19 +710,18 @@ class MacroController:
                 self.attack_direction = 'right'
             elif self.attack_direction == 'right' and self.player_manager.x >= 140:
                 self.attack_direction = 'left'
-            print('Direction changed to:', self.attack_direction)
+            print('Direction changed to:', self.attack_direction, '. Releasing all keys...')
+            self.player_manager.release_keys()
         elif self.next_up_range and self.zero_coord_count <= 5 and \
                 (self.current_platform_hash == self.top_left_plat or self.current_platform_hash == self.top_right_plat):
-            print('Direction changed')
             self.next_up_range = None
 
             if self.attack_direction == 'left':
                 self.attack_direction = 'right'
             else:
                 self.attack_direction = 'left'
-            print('Direction changed to:', self.attack_direction)
-
-        self.player_manager.release_keys()
+            print('Arrived at next platform:', self.attack_direction, '. Releasing all keys...')
+            self.player_manager.release_keys()
 
     def attack_left(self):
         """
@@ -725,12 +733,14 @@ class MacroController:
         attack_mode = random.randint(1, 100)
 
         if attack_mode <= 80:
-            self.player_manager.telecastl()
+            print('Telecasting')
+            self.player_manager.telecast()
         elif 81 <= attack_mode <= 90:
-            self.player_manager.telel_attack()
+            print('Tele attack')
+            self.player_manager.tele_attack()
         elif 91 <= attack_mode <= 100:
+            print('Tele jump attack')
             self.player_manager.telejl_attack()
-        return
 
     def attack_right(self):
         """
@@ -739,15 +749,18 @@ class MacroController:
         10% Chance: Tele left attack
         10% Chance: Tele jump left attack
         """
+
         attack_mode = random.randint(1, 100)
 
         if attack_mode <= 80:
-            self.player_manager.telecastr()
+            print('Telecasting')
+            self.player_manager.telecast()
         elif 81 <= attack_mode <= 90:
-            self.player_manager.teler_attack()
+            print('Tele attack')
+            self.player_manager.tele_attack()
         elif 91 <= attack_mode <= 100:
+            print('Tele jump attack')
             self.player_manager.telejr_attack()
-        return
 
     def move_down(self):
         """
@@ -756,7 +769,7 @@ class MacroController:
         30% Chance: Drop
         """
         move_down_mode = random.randint(1, 100)
-
+        self.player_manager.release_keys()
         if move_down_mode <= 30:
             print('Going down by dropping')
             self.player_manager.drop()
@@ -783,7 +796,10 @@ class MacroController:
                 still_navigating = False
             time.sleep(0.05)
 
+        self.player_manager.release_keys()
+
     def unstuck(self, randomize=False):
+        self.player_manager.release_keys()
         if randomize:
             """
             Gets called when player starts bot from resting platform
@@ -798,28 +814,21 @@ class MacroController:
                 self.player_manager.teleju()
 
         if self.current_action != 'resting' and (
-                self.zero_coord_count >= 5 or self.current_platform_hash == self.rest_plat) and self.player_manager.x <= 90:
-            print('Trying to unstuck...', self.next_up_range, self.next_drop_range)
+                self.zero_coord_count >= 5 or self.current_platform_hash == self.rest_plat):
+            print("Trying to unstuck from resting platform")
             if self.next_up_range:
                 self.player_manager.teleu()
             elif self.next_drop_range:
                 self.player_manager.telejd()
 
-    def unstick(self):
-        """
-        Run when script can't find which platform we are at.
-        Solution: try random stuff to attempt it to reposition it self
-        :return: None
-        """
-        # Method one: get off ladder
-        self.player_manager.jumpr()
-        time.sleep(2)
-        if self.find_current_platform():
-            return 0
-        self.player_manager.dbljump_max()
-        time.sleep(2)
-        if self.find_current_platform():
-            return 0
+        # if self.player_manager.x >= 178 and self.current_platform_hash == self.bottom_plat:
+        #     """
+        #     Go left if go out of bound (right)
+        #     """
+        #     self.player_manager.telel_attack()
+
+        # if self.player_manager.x <= 63 and self.current_platform_hash == self.bottom_plat:
+        #     self.player_manager.teleju()
 
     def abort(self):
         self.keyhandler.reset()

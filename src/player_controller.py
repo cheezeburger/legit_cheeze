@@ -419,10 +419,7 @@ class PlayerController:
                     break
 
     def release_keys(self):
-        self.key_mgr._direct_release(DIK_UP)
-        self.key_mgr._direct_release(DIK_DOWN)
-        self.key_mgr._direct_release(DIK_LEFT)
-        self.key_mgr._direct_release(DIK_RIGHT)
+        self.key_mgr.reset()
 
     def castSkill(self, key, delay, sleep_first= False):
         if sleep_first:
@@ -497,6 +494,51 @@ class PlayerController:
         time.sleep(0.2)
         self.key_mgr._direct_release(DIK_LCTRL)
         time.sleep(1)
+    #==================================
+    def walk(self, direction):
+        self.key_mgr._direct_press(self.getKey(direction))
+        time.sleep(0.1)
+
+    def tele_attack(self):
+        self.key_mgr._direct_press(DIK_D)
+        time.sleep(0.1)
+        self.key_mgr._direct_press(DIK_X)
+        time.sleep(0.1)
+
+        self.key_mgr._direct_release(DIK_X)
+        self.key_mgr._direct_release(DIK_D)
+
+    # ==================================
+    def telecast(self):
+        # self.key_mgr._direct_press(DIK_G)
+        # time.sleep(0.05)
+        # self.key_mgr._direct_release(DIK_G)
+        #
+        # self.key_mgr._direct_press(DIK_X)
+        # time.sleep(0.1)
+        # self.key_mgr._direct_release(DIK_X)
+        #
+        # self.key_mgr._direct_press(DIK_D)
+        # time.sleep(0.1)
+        #
+        # self.key_mgr._direct_press(DIK_X)
+        # time.sleep(0.05)
+        # self.key_mgr._direct_release(DIK_X)
+        # self.key_mgr._direct_release(DIK_D)
+
+        self.key_mgr._direct_press(DIK_G)
+        time.sleep(0.05)
+        self.key_mgr._direct_press(DIK_X)
+        time.sleep(0.05)
+        self.key_mgr._direct_press(DIK_D)
+        time.sleep(0.1)
+        self.key_mgr._direct_press(DIK_X)
+        time.sleep(0.05)
+
+        self.key_mgr._direct_release(DIK_RIGHT)
+        self.key_mgr._direct_release(DIK_G)
+        self.key_mgr._direct_release(DIK_D)
+        self.key_mgr._direct_release(DIK_X)
 
     def walkl(self):
         self.key_mgr._direct_press(DIK_LEFT)
@@ -677,8 +719,8 @@ class PlayerController:
         self.key_mgr._direct_release(DIK_LEFT)
 
     def telejl_attack(self):
-        self.key_mgr._direct_press(DIK_LEFT)
-        time.sleep(0.05)
+        # self.key_mgr._direct_press(DIK_LEFT)
+        # time.sleep(0.05)
         self.key_mgr._direct_press(DIK_D)
         time.sleep(0.1)
         self.key_mgr._direct_press(self.jump_key)
@@ -700,7 +742,7 @@ class PlayerController:
         self.key_mgr._direct_press(DIK_X)
         self.key_mgr._direct_release(DIK_X)
         self.key_mgr._direct_release(self.jump_key)
-        self.key_mgr._direct_release(DIK_LEFT)
+        # self.key_mgr._direct_release(DIK_LEFT)
 
     def teler_attack(self):
         self.key_mgr._direct_press(DIK_RIGHT)
@@ -713,8 +755,8 @@ class PlayerController:
         self.key_mgr._direct_release(DIK_RIGHT)
 
     def telejr_attack(self):
-        self.key_mgr._direct_press(DIK_RIGHT)
-        time.sleep(0.05)
+        # self.key_mgr._direct_press(DIK_RIGHT)
+        # time.sleep(0.05)
         self.key_mgr._direct_press(DIK_D)
         time.sleep(0.1)
         self.key_mgr._direct_press(self.jump_key)
