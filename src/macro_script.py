@@ -713,25 +713,25 @@ class MacroController:
         """
         randomize_drop = random.randint(1, 150)
 
-        # if randomize_mode <= 1:
-        #
-        #     if self.attack_direction == 'left':
-        #         print("Move randomzied -> Right!")
-        #         self.attack_direction = 'right'
-        #     elif self.attack_direction == 'right':
-        #         print("Move randomzied -> left!")
-        #         self.attack_direction = 'left'
-        #
-        #     self.next_drop_range = None
-        #     self.next_up_range = None
-        #
-        #     self.player_manager.release_keys()
-        #
-        # if randomize_drop <= 1 and \
-        #         (self.current_platform_hash == self.top_left_plat or self.current_platform_hash == self.top_right_plat):
-        #     print("Dropping randomly!")
-        #     self.move_down()
-        #     self.player_manager.release_keys()
+        if randomize_mode <= 1:
+
+            if self.attack_direction == 'left':
+                print("Move randomzied -> Right!")
+                self.attack_direction = 'right'
+            elif self.attack_direction == 'right':
+                print("Move randomzied -> left!")
+                self.attack_direction = 'left'
+
+            self.next_drop_range = None
+            self.next_up_range = None
+
+            self.player_manager.release_keys()
+
+        if randomize_drop <= 1 and \
+                (self.current_platform_hash == self.top_left_plat or self.current_platform_hash == self.top_right_plat):
+            print("Dropping randomly!")
+            self.move_down()
+            self.player_manager.release_keys()
 
         if self.next_drop_range and self.zero_coord_count <= 5 and self.current_platform_hash == self.bottom_plat:
             """
