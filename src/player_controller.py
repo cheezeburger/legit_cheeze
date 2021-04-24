@@ -779,7 +779,7 @@ class PlayerController:
             time.sleep(0.1)
             self.key_mgr._direct_release(DIK_LEFT)
             self.key_mgr._direct_press(DIK_RIGHT)
-            self.pressing_arrow_key = False
+            # self.pressing_arrow_key = False
 
         self.key_mgr._direct_press(DIK_X)
         self.key_mgr._direct_release(DIK_X)

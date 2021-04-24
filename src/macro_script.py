@@ -413,7 +413,7 @@ class MacroController:
 
                 if not self.hammer_time and self.current_platform_hash == self.bottom_plat or \
                     time.time() - self.hammer_time > 13 and self.current_platform_hash == self.bottom_plat:
-                    self.player_manager.release_keys()
+                    self.release_keys()
                     self.player_manager.backflip_attackl('v')
                     self.hammer_time = time.time()
                     self.release_keys()
@@ -436,6 +436,7 @@ class MacroController:
                     """
                     Drop if within range
                     """
+                    self.release_keys()
                     self.move_down()
                     return
 
@@ -731,13 +732,13 @@ class MacroController:
             self.next_drop_range = None
             self.next_up_range = None
 
-            self.player_manager.release_keys()
+            self.release_keys()
 
         if randomize_drop <= 1 and \
                 (self.current_platform_hash == self.top_left_plat or self.current_platform_hash == self.top_right_plat):
             print("Dropping randomly!")
             self.move_down()
-            self.player_manager.release_keys()
+            self.release_keys()
 
         if self.next_drop_range and self.zero_coord_count <= 5 and self.current_platform_hash == self.bottom_plat:
             """
@@ -814,7 +815,7 @@ class MacroController:
         30% Chance: Drop
         """
         move_down_mode = random.randint(1, 100)
-        self.player_manager.release_keys()
+        self.release_keys()
         if move_down_mode <= 30:
             print('Going down by dropping')
             self.player_manager.drop()
@@ -841,7 +842,7 @@ class MacroController:
                 still_navigating = False
             time.sleep(0.05)
 
-        self.player_manager.release_keys()
+        self.release_keys()
 
     def unstuck(self, randomize=False):
         if randomize:
@@ -860,7 +861,7 @@ class MacroController:
         if self.current_action != 'resting' and (
                 self.zero_coord_count >= 7 or self.current_platform_hash == self.rest_plat):
             print("Trying to unstuck from resting platform")
-            self.player_manager.release_keys()
+            self.release_keys()
             if self.next_up_range:
                 self.player_manager.teleu()
             elif self.next_drop_range:
@@ -870,7 +871,7 @@ class MacroController:
             """
             Additional out of bound check
             """
-            self.player_manager.release_keys()
+            self.release_keys()
             self.player_manager.telel()
             return
         # if self.player_manager.x >= 178 and self.current_platform_hash == self.bottom_plat:
