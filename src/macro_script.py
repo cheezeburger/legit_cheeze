@@ -248,13 +248,7 @@ class MacroController:
 
     def loop(self):
         # Update Screen
-        self.screen_processor.update_image(set_focus=True)
-        # Update Constants
-        player_minimap_pos = self.screen_processor.find_player_minimap_marker()
-
-        if not player_minimap_pos:
-            return -1
-        self.player_manager.update(player_minimap_pos[0], player_minimap_pos[1])
+        self.update_screen()
 
         self.current_platform_hash = self.find_current_platform()
 
@@ -400,6 +394,10 @@ class MacroController:
                     Character is within going up range
                     """
                     print("Going up to top left platform")
+                    self.update_screen()
+                    self.go_away_from_portal()
+                    time.sleep(0.5)
+
                     self.release_keys()
                     self.player_manager.teleju()
                     return
@@ -476,10 +474,7 @@ class MacroController:
 
                             while self.player_manager.x > 175:
                                 print('Unstuck from right bound')
-                                self.screen_processor.update_image(set_focus=True)
-                                player_minimap_pos = self.screen_processor.find_player_minimap_marker()
-
-                                self.player_manager.update(player_minimap_pos[0], player_minimap_pos[1])
+                                self.update_screen()
 
                             self.release_keys()
                             print('Going up by teleport jump up')
@@ -600,6 +595,15 @@ class MacroController:
         #         self.player_manager.teled()
         #     else:
         #         self.player_manager.drop()
+
+    def update_screen(self):
+        self.screen_processor.update_image(set_focus=True)
+        # Update Constants
+        player_minimap_pos = self.screen_processor.find_player_minimap_marker()
+
+        if not player_minimap_pos:
+            return -1
+        self.player_manager.update(player_minimap_pos[0], player_minimap_pos[1])
 
     def go_away_from_portal(self):
         if 72 <= self.player_manager.x <= 76 and (self.zero_coord_count >= 5 or self.current_platform_hash == self.rest_plat):
