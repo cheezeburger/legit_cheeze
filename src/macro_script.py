@@ -361,6 +361,7 @@ class MacroController:
 
             if self.current_platform_hash != self.rest_plat or self.zero_coord_count <= 5:
                 if not self.player_manager.pressing_arrow_key:
+                    self.release_keys()
                     self.player_manager.walk('left')
 
             if self.current_platform_hash == self.top_right_plat or self.current_platform_hash == self.top_left_plat:
@@ -421,6 +422,7 @@ class MacroController:
 
         elif self.attack_direction == 'right':
             if not self.player_manager.pressing_arrow_key:
+                self.release_keys()
                 self.player_manager.walk('right')
 
             if self.current_platform_hash == self.top_right_plat or self.current_platform_hash == self.top_left_plat:
@@ -600,7 +602,7 @@ class MacroController:
         #         self.player_manager.drop()
 
     def go_away_from_portal(self):
-        if 72 <= self.player_manager.x <= 76:
+        if 72 <= self.player_manager.x <= 76 and (self.zero_coord_count >= 5 or self.current_platform_hash == self.rest_plat):
             """
             # Left portal x(72, 76)
             If player is within portal range
@@ -609,7 +611,7 @@ class MacroController:
             1 -> Walk right
             """
             walk_movement_choice = random.randint(0, 1)
-            self.player_manager.release_keys()
+            self.release_keys()
             if walk_movement_choice:
                 print('Going away from portal... walking left.')
                 self.player_manager.walkr()
@@ -621,7 +623,7 @@ class MacroController:
             # Right portal x(179, 182)
             If within right portal range, only walk left sice platform is on left
             """
-            self.player_manager.release_keys()
+            self.release_keys()
             self.player_manager.walkl()
 
     def go_to_rest_plat(self):
