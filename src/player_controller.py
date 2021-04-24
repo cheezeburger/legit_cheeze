@@ -136,6 +136,8 @@ class PlayerController:
 
         self.overload_stack = 0
 
+        self.pressing_arrow_key = False
+
     def update(self, player_coords_x=None, player_coords_y=None):
         """
         Updates self.x, self.y to input coordinates
@@ -496,6 +498,8 @@ class PlayerController:
         time.sleep(1)
     #==================================
     def walk(self, direction):
+        print('called')
+        self.pressing_arrow_key = True
         self.key_mgr._direct_press(self.getKey(direction))
         time.sleep(0.1)
 
@@ -535,7 +539,7 @@ class PlayerController:
         self.key_mgr._direct_press(DIK_X)
         time.sleep(0.05)
 
-        self.key_mgr._direct_release(DIK_RIGHT)
+        # self.key_mgr._direct_release(DIK_RIGHT)
         self.key_mgr._direct_release(DIK_G)
         self.key_mgr._direct_release(DIK_D)
         self.key_mgr._direct_release(DIK_X)
@@ -738,6 +742,7 @@ class PlayerController:
             time.sleep(0.1)
             self.key_mgr._direct_release(DIK_RIGHT)
             self.key_mgr._direct_press(DIK_LEFT)
+            self.pressing_arrow_key = False
 
         self.key_mgr._direct_press(DIK_X)
         self.key_mgr._direct_release(DIK_X)
@@ -774,6 +779,7 @@ class PlayerController:
             time.sleep(0.1)
             self.key_mgr._direct_release(DIK_LEFT)
             self.key_mgr._direct_press(DIK_RIGHT)
+            self.pressing_arrow_key = False
 
         self.key_mgr._direct_press(DIK_X)
         self.key_mgr._direct_release(DIK_X)
