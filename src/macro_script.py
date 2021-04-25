@@ -260,6 +260,7 @@ class MacroController:
 
         self.reinitialize_platform_movement()
         self.unstuck()
+
         # =========Resting Check=========
         if not self.next_rest:
             # Initialization of next rest with randomized time (7 - 15 minutes)
@@ -320,12 +321,12 @@ class MacroController:
             print('Casting SE')
             self.se_time = time.time()
             self.player_manager.castSkill(';', 0.5, sleep_first=True)
-        if not self.pet_feed_time or time.time() - self.pet_feed_time > 86:
+        if not self.pet_feed_time or time.time() - self.pet_feed_time > 53:
             print('Feeding pets')
             self.pet_feed_time = time.time()
-            self.player_manager.castSkill('8', 0.2, sleep_first=True)
-            self.player_manager.castSkill('8', 0.2, sleep_first=True)
-        if not self.mana_pot_time or time.time() - self.mana_pot_time > 70:
+            self.player_manager.castSkill('o', 0.2, sleep_first=True)
+            self.player_manager.castSkill('o', 0.2, sleep_first=True)
+        if not self.mana_pot_time or time.time() - self.mana_pot_time > 31:
             print('Mana pot')
             self.mana_pot_time = time.time()
             self.player_manager.castSkill('CONTROL_L', 0.1, sleep_first=True)

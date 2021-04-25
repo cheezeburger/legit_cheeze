@@ -531,13 +531,13 @@ class PlayerController:
         # self.key_mgr._direct_release(DIK_D)
 
         self.key_mgr._direct_press(DIK_G)
-        time.sleep(0.05)
+        time.sleep(abs(0.05 + self.random_duration(0.1)))
         self.key_mgr._direct_press(DIK_X)
-        time.sleep(0.05)
+        time.sleep(abs(0.05 + self.random_duration(0.1)))
         self.key_mgr._direct_press(DIK_D)
-        time.sleep(0.1)
+        time.sleep(abs(0.1 + self.random_duration(0.1)))
         self.key_mgr._direct_press(DIK_X)
-        time.sleep(0.05)
+        time.sleep(abs(0.05 + self.random_duration(0.1)))
 
         # self.key_mgr._direct_release(DIK_RIGHT)
         self.key_mgr._direct_release(DIK_G)
@@ -546,7 +546,7 @@ class PlayerController:
 
     def walkl(self):
         self.key_mgr._direct_press(DIK_LEFT)
-        time.sleep(0.21)
+        time.sleep(abs(0.21 + self.random_duration(0.1)))
         self.key_mgr._direct_release(DIK_LEFT)
 
     def walkjl(self):
@@ -566,12 +566,12 @@ class PlayerController:
         self.key_mgr._direct_release(DIK_D)
 
     def telejl(self):
-        self.key_mgr._direct_press(DIK_LEFT)
-        time.sleep(0.5)
+        # self.key_mgr._direct_press(DIK_LEFT)
+        time.sleep(abs(0.5 + self.random_duration(0.1)))
         self.key_mgr._direct_press(DIK_D)
-        time.sleep(0.2)
+        time.sleep(abs(0.2 + self.random_duration(0.1)))
         self.key_mgr._direct_press(self.jump_key)
-        time.sleep(0.1)
+        time.sleep(abs(0.1 + self.random_duration(0.1)))
         self.key_mgr._direct_release(DIK_LEFT)
         self.key_mgr._direct_release(self.jump_key)
         self.key_mgr._direct_release(DIK_D)
@@ -763,9 +763,9 @@ class PlayerController:
         # self.key_mgr._direct_press(DIK_RIGHT)
         # time.sleep(0.05)
         self.key_mgr._direct_press(DIK_D)
-        time.sleep(0.1)
+        time.sleep(abs(0.1 + self.random_duration(0.1)))
         self.key_mgr._direct_press(self.jump_key)
-        time.sleep(0.1)
+        time.sleep(abs(0.1 + self.random_duration(0.1)))
 
         flip_right_attack_chance = random.randint(0, 100)
 
