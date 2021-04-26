@@ -315,7 +315,7 @@ class MacroController:
 
             if 69 <= self.player_manager.x < 77:
                 while True:
-                    print('Going away from portal')
+                    print('Going away from left portal')
                     self.update_screen()
                     self.player_manager.walkl()
                     if not 69 <= self.player_manager.x < 77:
