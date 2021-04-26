@@ -335,7 +335,7 @@ class MacroController:
                 change_direction = time.time()
             self.player_manager.telel_attack()
         elif get_current_platform == 'a7de5437':
-            print('Moving right attack')
+            print('Moving right to attack')
             change_direction = random.randint(1, 100)
             if 90 <= self.player_manager.x <= 125 and change_direction <= 20 and time.time() - self.direction_change_time > 16:
                 print('Changing direction to attack')
