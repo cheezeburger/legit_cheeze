@@ -449,6 +449,13 @@ class PlayerController:
         self.key_mgr._direct_release(DIK_LCTRL)
         time.sleep(1)
 
+    def walkl(self):
+        self.key_mgr._direct_press(DIK_LEFT)
+        time.sleep(0.5)
+
+        self.key_mgr._direct_release(DIK_LEFT)
+
+
     def telel(self):
         self.key_mgr._direct_press(DIK_LEFT)
         time.sleep(0.05)
@@ -509,7 +516,7 @@ class PlayerController:
         self.key_mgr._direct_press(DIK_V)
         time.sleep(0.1)
 
-        attack_counts = random.randint(1, 5)
+        attack_counts = random.randint(3, 6)
 
         for x in range(attack_counts):
             self.key_mgr._direct_press(DIK_X)
@@ -541,7 +548,7 @@ class PlayerController:
         self.key_mgr._direct_press(DIK_V)
         time.sleep(0.1)
         
-        attack_counts = random.randint(1, 5)
+        attack_counts = random.randint(3, 6)
         for x in range(attack_counts):
             self.key_mgr._direct_press(DIK_X)
             time.sleep(0.1)

@@ -224,13 +224,7 @@ class MacroController:
     def loop(self):
         # self.player_manager.teled()
         # Update Screen
-        self.screen_processor.update_image(set_focus=True)
-        # Update Constants
-        player_minimap_pos = self.screen_processor.find_player_minimap_marker()
-
-        if not player_minimap_pos:
-            return -1
-        self.player_manager.update(player_minimap_pos[0], player_minimap_pos[1])
+        self.update_screen()
 
         self.current_platform_hash = None
         get_current_platform = self.find_current_platform()
@@ -295,10 +289,36 @@ class MacroController:
         if get_current_platform == '764feb49':
             print('Moving up')
             self.player_manager.teleu()
-        elif (get_current_platform == '9540508d') and (self.player_manager.x < 75) and not 48 <= self.player_manager.x < 55:
-            print('Moving up')
+        if 69 <= self.player_manager.x < 77 and get_current_platform == '9540508d':
+            while True:
+                print('Going away from portal')
+                self.update_screen()
+                self.player_manager.walkl()
+                if not 69 <= self.player_manager.x < 77:
+                    break
+
+            time.sleep(0.5)
             self.player_manager.teleu()
-        elif (get_current_platform == '9540508d') and (self.player_manager.x >= 47):
+            return
+        elif (get_current_platform == '9540508d') and (self.player_manager.x < 80) and not 69 <= self.player_manager.x < 77:
+            print('Moving up')
+            time.sleep(0.5)
+            self.update_screen()
+
+            if 69 <= self.player_manager.x < 77:
+                while True:
+                    print('Going away from portal')
+                    self.update_screen()
+                    self.player_manager.walkl()
+                    if not 69 <= self.player_manager.x < 77:
+                        break
+
+                time.sleep(0.5)
+                self.player_manager.teleu()
+                return
+            self.player_manager.teleu()
+
+        elif (get_current_platform == '9540508d') and (self.player_manager.x >= 80):
             print('Moving left attack')
             change_direction = random.randint(1, 100)
             if 130 <= self.player_manager.x <= 170 and change_direction <= 20 and time.time() - self.direction_change_time > 16:
@@ -339,6 +359,14 @@ class MacroController:
         # self.loop_count += 1
         # return 0
 
+    def update_screen(self):
+        self.screen_processor.update_image(set_focus=True)
+        # Update Constants
+        player_minimap_pos = self.screen_processor.find_player_minimap_marker()
+
+        if not player_minimap_pos:
+            return -1
+        self.player_manager.update(player_minimap_pos[0], player_minimap_pos[1])
 
     def unstick(self):
         """
