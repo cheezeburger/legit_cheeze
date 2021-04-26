@@ -297,7 +297,6 @@ class MacroController:
                 if not 69 <= self.player_manager.x < 77:
                     break
 
-            time.sleep(0.5)
             self.player_manager.teleu()
             return
         if self.player_manager.x >= 177 and get_current_platform == '9540508d':
@@ -320,7 +319,6 @@ class MacroController:
                     if not 69 <= self.player_manager.x < 77:
                         break
 
-                time.sleep(0.5)
                 self.player_manager.teleu()
                 return
             self.player_manager.teleu()

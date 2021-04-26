@@ -414,18 +414,16 @@ class PlayerController:
         time.sleep(1)
 
     def castYoungYasha(self):
-        time.sleep(1)
+        time.sleep(0.3)
         self.key_mgr._direct_press(DIK_G)
         time.sleep(0.2)
         self.key_mgr._direct_release(DIK_G)
-        time.sleep(1.2)
 
     def castYuki(self):
-        time.sleep(1)
+        time.sleep(0.2)
         self.key_mgr._direct_press(DIK_5)
         time.sleep(0.2)
         self.key_mgr._direct_release(DIK_5)
-        time.sleep(1.2)
 
     def castHs(self):
         time.sleep(1)
