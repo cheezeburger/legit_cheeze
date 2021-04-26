@@ -300,6 +300,14 @@ class MacroController:
             time.sleep(0.5)
             self.player_manager.teleu()
             return
+        if self.player_manager.x >= 177 and get_current_platform == '9540508d':
+            while True:
+                self.update_screen()
+                self.player_manager.walkl()
+                if not self.player_manager.x >= 177:
+                    break
+            return
+
         elif (get_current_platform == '9540508d') and (self.player_manager.x < 80) and not 69 <= self.player_manager.x < 77:
             print('Moving up')
             time.sleep(0.5)
