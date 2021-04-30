@@ -251,8 +251,7 @@ class MacroController:
             self.zero_coord_count = 0
 
         self.reinitialize_platform_movement()
-        print(self.attack_direction)
-        # self.unstuck()
+        self.unstuck()
 
         # =========Buff Section=========
         if not self.booster_mw_time or time.time() - self.booster_mw_time > 180:
@@ -775,35 +774,38 @@ class MacroController:
         self.release_keys()
 
     def unstuck(self, randomize=False):
-        if randomize:
-            """
-            Gets called when player starts bot from resting platform
-            50% chance: Tele up
-            50% chance: Tele down
-            """
-            random_move = random.randint(0, 1)
-
-            if random_move:
-                self.player_manager.teled()
-            else:
-                self.player_manager.teleju()
-
-        if self.current_action != 'resting' and (
-                self.zero_coord_count >= 7 or self.current_platform_hash == self.rest_plat):
-            print("Trying to unstuck from resting platform")
+        if self.zero_coord_count >= 5:
             self.release_keys()
-            if self.next_up_range:
-                self.player_manager.teleu()
-            elif self.next_drop_range:
-                self.player_manager.telejd()
-
-        if self.player_manager.x >= 182 and self.current_platform_hash == self.bottom_plat:
-            """
-            Additional out of bound check
-            """
-            self.release_keys()
-            self.player_manager.telel()
-            return
+            self.player_manager.teled()
+        # if randomize:
+        #     """
+        #     Gets called when player starts bot from resting platform
+        #     50% chance: Tele up
+        #     50% chance: Tele down
+        #     """
+        #     random_move = random.randint(0, 1)
+        #
+        #     if random_move:
+        #         self.player_manager.teled()
+        #     else:
+        #         self.player_manager.teleju()
+        #
+        # if self.current_action != 'resting' and (
+        #         self.zero_coord_count >= 7 or self.current_platform_hash == self.rest_plat):
+        #     print("Trying to unstuck from resting platform")
+        #     self.release_keys()
+        #     if self.next_up_range:
+        #         self.player_manager.teleu()
+        #     elif self.next_drop_range:
+        #         self.player_manager.telejd()
+        #
+        # if self.player_manager.x >= 182 and self.current_platform_hash == self.bottom_plat:
+        #     """
+        #     Additional out of bound check
+        #     """
+        #     self.release_keys()
+        #     self.player_manager.telel()
+        #     return
         # if self.player_manager.x >= 178 and self.current_platform_hash == self.bottom_plat:
         #     """
         #     Go left if go out of bound (right)
