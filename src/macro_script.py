@@ -304,17 +304,8 @@ class MacroController:
         if self.current_action != 'attack':
             return
 
-        if self.player_manager.x <= 45 and self.current_platform_hash == self.bottom_plat:
-            move_up_mode = random.randint(1, 100)
-
-            if move_up_mode > 50:
-                self.release_keys()
-                self.move_down()
-            else:
-                self.release_keys()
-                self.player_manager.teleju()
-            return
-        if self.player_manager.x >= 160 and self.current_platform_hash == self.top_plat:
+        if (self.player_manager.x <= 45 and self.current_platform_hash == self.bottom_plat) or \
+                (self.player_manager.x >= 160 and self.current_platform_hash == self.top_plat):
             self.release_keys()
             self.move_down()
             return
