@@ -82,6 +82,9 @@ class MacroController:
         # If unstick after this amount fails to get us on a known platform, abort abort.
 
         self.logger.debug("%s init finished" % self.__class__.__name__)
+
+        self.rune_alert_time = 0
+
         self.booster_mw_time = 0
         self.adv_bless_time = 0
         self.grim_reaper_time = 0
@@ -178,9 +181,11 @@ class MacroController:
             if rune_platform_hash:
                 return rune_platform_hash, rune_coords
             else:
-                return 0, 0
+                return None
+                # return 0, 0
         else:
-            return 0, 0
+            # return 0, 0
+            return None
 
     def navigate_to_rune_platform(self):
         """
@@ -250,6 +255,7 @@ class MacroController:
         else:
             self.zero_coord_count = 0
 
+        self.rune_alert()
         self.reinitialize_platform_movement()
         self.unstuck()
 
@@ -318,7 +324,7 @@ class MacroController:
             if self.current_platform_hash == self.bottom_plat:
                 self.attack_left()
                 if not self.hammer_time and self.current_platform_hash == self.bottom_plat or \
-                    time.time() - self.hammer_time > 13 and self.current_platform_hash == self.bottom_plat:
+                        time.time() - self.hammer_time > 13 and self.current_platform_hash == self.bottom_plat:
                     self.release_keys()
                     self.player_manager.backflip_attackr('v')
                     self.hammer_time = time.time()
@@ -332,7 +338,7 @@ class MacroController:
             if self.current_platform_hash == self.top_plat:
                 self.attack_right()
                 if not self.hammer_time and self.current_platform_hash == self.bottom_plat or \
-                    time.time() - self.hammer_time > 13 and self.current_platform_hash == self.bottom_plat:
+                        time.time() - self.hammer_time > 13 and self.current_platform_hash == self.bottom_plat:
                     self.release_keys()
                     self.player_manager.backflip_attackl('v')
                     self.hammer_time = time.time()
@@ -516,7 +522,8 @@ class MacroController:
         self.player_manager.update(player_minimap_pos[0], player_minimap_pos[1])
 
     def go_away_from_portal(self):
-        if 72 <= self.player_manager.x <= 76 and (self.zero_coord_count >= 5 or self.current_platform_hash == self.rest_plat):
+        if 72 <= self.player_manager.x <= 76 and (
+                self.zero_coord_count >= 5 or self.current_platform_hash == self.rest_plat):
             """
             # Left portal x(72, 76)
             If player is within portal range
@@ -589,7 +596,7 @@ class MacroController:
                 If top platform -> Either drop or tele down to the platform
                 0 -> Drop
                 1 -> Teleport down
-                
+
                 If bottom platform -> Teleport up
                 """
                 if self.current_platform_hash == self.top_left_plat:
@@ -727,7 +734,6 @@ class MacroController:
             self.player_manager.telejr_attack()
             # self.release_keys()
 
-
     def move_down(self):
         """
         Move down mode:
@@ -811,3 +817,16 @@ class MacroController:
         self.logger.debug("aborted")
         if self.log_queue:
             self.log_queue.put(["stopped", None])
+
+    def rune_alert(self):
+        if self.find_rune_platform():
+            if self.rune_alert_time <= 0:
+                self.rune_alert_time = time.time()
+                self.screen_processor.play_rune_alert()
+                return
+
+            if round(time.time() - self.rune_alert_time) % 5 == 0:
+                self.screen_processor.play_rune_alert()
+                return
+        else:
+            self.rune_alert_time = 0

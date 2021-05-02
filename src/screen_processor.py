@@ -1,16 +1,13 @@
 import cv2, win32gui, time, math, win32ui, win32con
 from PIL import ImageGrab
 import numpy as np, ctypes, ctypes.wintypes
+import pyttsx3
 
 class MapleWindowNotFoundError(Exception):
     pass
 
 
 MAPLESTORY_WINDOW_TITLE = "MapleStory"
-
-
-
-
 
 class MapleScreenCapturer:
     """Container for capturing MS screen"""
@@ -303,6 +300,13 @@ class StaticImageProcessor:
             return avg_x, avg_y
 
         return 0
+
+    def play_rune_alert(self):
+        engine = pyttsx3.init()
+        voices = engine.getProperty('voices')
+        engine.setProperty('voice', voices[1].id)
+        engine.say("Rune detected!")
+        engine.runAndWait()
 
 if __name__ == "__main__":
     dx = MapleScreenCapturer()

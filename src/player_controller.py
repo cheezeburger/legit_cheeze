@@ -45,10 +45,14 @@ from directinput_constants import \
     DIK_COMMA, \
     DIK_PGDOWN, \
     DIK_PGUP, \
+    DIK_F8, \
     DIK_F9, \
     DIK_F10, \
+    DIK_F11, \
+    DIK_F12, \
     DIK_SEMICOLON, \
-    DIK_DASH
+    DIK_DASH, \
+    DIK_END
 from keystate_manager import DEFAULT_KEY_MAP
 import time, math, random
 
@@ -498,7 +502,6 @@ class PlayerController:
         time.sleep(1)
     #==================================
     def walk(self, direction):
-        print('called')
         self.pressing_arrow_key = True
         self.key_mgr._direct_press(self.getKey(direction))
         time.sleep(0.1)
@@ -786,6 +789,34 @@ class PlayerController:
         self.key_mgr._direct_release(self.jump_key)
         self.key_mgr._direct_release(DIK_LEFT)
 
+    def j_attack(self):
+        self.key_mgr._direct_press(self.jump_key)
+        time.sleep(0.1 + self.random_duration(0.05))
+        self.key_mgr._direct_press(DIK_C)
+        time.sleep(0.1 + self.random_duration(0.05))
+
+        self.key_mgr._direct_release(self.jump_key)
+        self.key_mgr._direct_release(DIK_C)
+
+    def dj_attack(self):
+        self.key_mgr._direct_press(self.jump_key)
+        time.sleep(0.1 + self.random_duration(0.05))
+        self.key_mgr._direct_release(self.jump_key)
+        time.sleep(abs(0.1 + self.random_duration(0.05)))
+        self.key_mgr._direct_press(self.jump_key)
+        time.sleep(abs(0.05 + self.random_duration(0.05)))
+
+        attack_counts = random.randint(2, 4)
+
+        for x in range(attack_counts):
+            self.key_mgr._direct_press(DIK_C)
+            time.sleep(0.1 + self.random_duration(0.05))
+            self.key_mgr._direct_release(DIK_C)
+            time.sleep(0.05 + self.random_duration(0.05))
+
+        self.key_mgr._direct_release(self.jump_key)
+        self.key_mgr._direct_release(DIK_C)
+
     def dbljump_max(self):
         """Warining: is a blocking call"""
         self.key_mgr._direct_press(self.jump_key)
@@ -969,9 +1000,13 @@ class PlayerController:
             "left": DIK_LEFT,
             "right": DIK_RIGHT,
 
+            "end": DIK_END,
             "-": DIK_DASH,
+            "F8": DIK_F8,
             "F9": DIK_F9,
             "F10": DIK_F10,
+            "F11": DIK_F11,
+            "F12": DIK_F12,
             ";": DIK_SEMICOLON
         }
 
