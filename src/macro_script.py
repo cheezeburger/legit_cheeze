@@ -256,6 +256,7 @@ class MacroController:
             self.zero_coord_count = 0
 
         self.rune_alert()
+
         self.reinitialize_platform_movement()
         self.unstuck()
 
