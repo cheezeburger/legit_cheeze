@@ -256,6 +256,7 @@ class MacroController:
             self.zero_coord_count = 0
 
         self.rune_alert()
+        self.lie_detector_alert()
 
         self.reinitialize_platform_movement()
         self.unstuck()
@@ -831,3 +832,6 @@ class MacroController:
                 return
         else:
             self.rune_alert_time = 0
+
+    def lie_detector_alert(self):
+        self.screen_processor.find_violetta()

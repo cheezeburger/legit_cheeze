@@ -258,7 +258,7 @@ class PlayerController:
                 self.horizontal_move_goal(goal_x)
 
             else:
-                while True:
+                while Toe:
                     self.update()
 
                     if self.x >= goal_x - self.horizontal_goal_offset:

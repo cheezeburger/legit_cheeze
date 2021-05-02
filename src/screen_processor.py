@@ -301,6 +301,27 @@ class StaticImageProcessor:
 
         return 0
 
+    def find_violetta(self):
+        img_rgb = self.img_handle.screen_capture(1366, 800, save=False)
+        # img_rgb = cv2.imread('./lie_detector/violetta_ld_sample.png')
+        img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
+        violetta_template = cv2.imread('./lie_detector/violetta_no_makeup.png', 0)
+
+        res = cv2.matchTemplate(img_gray, violetta_template, cv2.TM_CCOEFF_NORMED)
+        threshold = 0.8
+
+        flag = False
+        if np.amax(res) > threshold:
+            flag = True
+
+        if flag:
+            engine = pyttsx3.init()
+            voices = engine.getProperty('voices')
+            engine.setProperty('voice', voices[1].id)
+            engine.say("Violetta lie detector")
+            engine.runAndWait()
+
+
     def play_rune_alert(self):
         engine = pyttsx3.init()
         voices = engine.getProperty('voices')
