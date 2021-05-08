@@ -2,6 +2,11 @@ import cv2, win32gui, time, math, win32ui, win32con
 from PIL import ImageGrab
 import numpy as np, ctypes, ctypes.wintypes
 import pyttsx3
+import pytesseract
+from pytesseract import Output
+from matplotlib import pyplot as plt
+
+pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
 class MapleWindowNotFoundError(Exception):
     pass
@@ -301,6 +306,55 @@ class StaticImageProcessor:
 
         return 0
 
+    def find_lie_detector_5(self):
+        # img_rgb = self.img_handle.screen_capture(800, 600, save=False)
+        img_rgb = cv2.imread('./lie_detector/ld_sample3.png')
+
+        alpha = 2  # Contrast control (1.0-3.0)
+        beta = 4  # Brightness control (0-100)
+        adjusted = cv2.convertScaleAbs(img_rgb, alpha=alpha, beta=beta)
+
+        kernel = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])
+        adjusted = cv2.filter2D(adjusted, -1, kernel)
+        config = ("-l eng --oem 1 --psm 7")
+        text = pytesseract.image_to_string(adjusted)
+        print(text)
+        # ld_template = cv2.imread('./lie_detector/ld_template_high.png')
+        # ld_template_adjusted = cv2.convertScaleAbs(ld_template)
+        # #
+        # res = cv2.matchTemplate(adjusted, ld_template_adjusted, cv2.TM_CCOEFF_NORMED)
+        # threshold = 0.3
+        #
+        # flag = False
+        # if np.amax(res) > threshold:
+        #     flag = True
+        # print(flag)
+
+        cv2.imshow('original', adjusted)
+        # cv2.imshow('adjusted', ld_template_adjusted)
+        cv2.waitKey()
+
+        # ld_template = cv2.imread('./lie_detector/ld_template_high.png', 0)
+        # text = pytesseract.image_to_string(ld_template)
+        # print(text)
+        # return
+        #
+        # res = cv2.matchTemplate(img_gray, ld_template, cv2.TM_CCOEFF_NORMED)
+        # threshold = 0.37
+        #
+        # flag = False
+        # if np.amax(res) > threshold:
+        #     flag = True
+        #
+        # print(flag)
+        # w, h = ld_template.shape[::-1]
+        # loc = np.where(res >= threshold)
+        # for pt in zip(*loc[::-1]):
+        #     cv2.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0, 0, 255), 2)
+        #
+        # if flag:
+        #     cv2.imwrite('res.png', img_rgb)
+
     def find_violetta(self):
         img_rgb = self.img_handle.screen_capture(1366, 800, save=False)
         # img_rgb = cv2.imread('./lie_detector/violetta_ld_sample.png')
@@ -308,7 +362,7 @@ class StaticImageProcessor:
         violetta_template = cv2.imread('./lie_detector/violetta_no_makeup.png', 0)
 
         res = cv2.matchTemplate(img_gray, violetta_template, cv2.TM_CCOEFF_NORMED)
-        threshold = 0.8
+        threshold = 0.6
 
         flag = False
         if np.amax(res) > threshold:
