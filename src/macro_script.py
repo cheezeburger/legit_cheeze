@@ -95,6 +95,7 @@ class MacroController:
         self.se_time = 0
         self.pet_feed_time = 0
         self.mana_pot_time = 0
+        self.hp_pot_time = 0
 
         # Platforms
         self.btm_plat = '0ebcbe36'
