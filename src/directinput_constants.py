@@ -115,5 +115,6 @@ keysym_map = {  # tkinter event keysym to dik key code coversion table
     "-": DIK_DASH,
     "F9": DIK_F9,
     "F10": DIK_F10,
-    ";": DIK_SEMICOLON
+    ";": DIK_SEMICOLON,
+    "end": DIK_END
 }

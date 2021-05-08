@@ -264,11 +264,19 @@ class MacroController:
         if not self.booster_mw_time or time.time() - self.booster_mw_time > 60:
             print('Casting buff set 1')
             self.booster_mw_time = time.time()
-            self.player_manager.castSkill('pgdown', 1.5)
+            self.player_manager.castSkill('pgdown', 2)
         if not self.hs_time or time.time() - self.hs_time > 60:
-            print('Casting HS')
+            print('Casting buff set 1')
             self.hs_time = time.time()
-            self.player_manager.castSkill('pgdown', 1.5)
+            self.player_manager.castSkill('pgup', 2)
+        if not self.hp_pot_time or time.time() - self.hp_pot_time > 31:
+            print('HP Pot')
+            self.hp_pot_time = time.time()
+            self.player_manager.castSkill('end', 0.1, sleep_first=True)
+        if not self.mana_pot_time or time.time() - self.mana_pot_time > 31:
+            print('Mana Pot')
+            self.mana_pot_time = time.time()
+            self.player_manager.castSkill('CONTROL_L', 0.1, sleep_first=True)
         # if not self.adv_bless_time or time.time() - self.adv_bless_time > 185:
         #     print('Casting Advance Bless')
         #     self.adv_bless_time = time.time()
