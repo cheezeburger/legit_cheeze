@@ -255,7 +255,7 @@ class MacroController:
         else:
             self.zero_coord_count = 0
 
-        self.rune_alert()
+        # self.rune_alert()
         self.lie_detector_alert()
 
         self.reinitialize_platform_movement()
