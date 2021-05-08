@@ -274,7 +274,7 @@ class MacroController:
             print('HP Pot')
             self.hp_pot_time = time.time()
             self.player_manager.castSkill('end', 0.1, sleep_first=True)
-        if not self.mana_pot_time or time.time() - self.mana_pot_time > 31:
+        if not self.mana_pot_time or time.time() - self.mana_pot_time > 34:
             print('Mana Pot')
             self.mana_pot_time = time.time()
             self.player_manager.castSkill('CONTROL_L', 0.1, sleep_first=True)
