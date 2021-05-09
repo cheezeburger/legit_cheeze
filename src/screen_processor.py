@@ -3,7 +3,7 @@ from PIL import ImageGrab
 import numpy as np, ctypes, ctypes.wintypes
 import pyttsx3
 import pytesseract
-from pytesseract import Output
+# from pytesseract import Output
 from matplotlib import pyplot as plt
 
 pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
@@ -308,17 +308,17 @@ class StaticImageProcessor:
 
     def find_lie_detector_5(self):
         # img_rgb = self.img_handle.screen_capture(800, 600, save=False)
-        img_rgb = cv2.imread('./lie_detector/ld_sample3.png')
-
-        alpha = 2  # Contrast control (1.0-3.0)
-        beta = 4  # Brightness control (0-100)
-        adjusted = cv2.convertScaleAbs(img_rgb, alpha=alpha, beta=beta)
-
-        kernel = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])
-        adjusted = cv2.filter2D(adjusted, -1, kernel)
-        config = ("-l eng --oem 1 --psm 7")
-        text = pytesseract.image_to_string(adjusted)
-        print(text)
+        # img_rgb = cv2.imread('./lie_detector/ld_sample3.png')
+        #
+        # alpha = 2  # Contrast control (1.0-3.0)
+        # beta = 4  # Brightness control (0-100)
+        # adjusted = cv2.convertScaleAbs(img_rgb, alpha=alpha, beta=beta)
+        #
+        # kernel = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])
+        # adjusted = cv2.filter2D(adjusted, -1, kernel)
+        # config = ("-l eng --oem 1 --psm 7")
+        # text = pytesseract.image_to_string(adjusted)
+        # print(text)
         # ld_template = cv2.imread('./lie_detector/ld_template_high.png')
         # ld_template_adjusted = cv2.convertScaleAbs(ld_template)
         # #
@@ -330,9 +330,9 @@ class StaticImageProcessor:
         #     flag = True
         # print(flag)
 
-        cv2.imshow('original', adjusted)
+        # cv2.imshow('original', adjusted)
         # cv2.imshow('adjusted', ld_template_adjusted)
-        cv2.waitKey()
+        # cv2.waitKey()
 
         # ld_template = cv2.imread('./lie_detector/ld_template_high.png', 0)
         # text = pytesseract.image_to_string(ld_template)

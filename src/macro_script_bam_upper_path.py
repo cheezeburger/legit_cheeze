@@ -254,10 +254,7 @@ class MacroController:
             self.zero_coord_count += 1
         else:
             self.zero_coord_count = 0
-        self.screen_processor.find_lie_detector_5()
-        print('cap')
-        time.sleep(200)
-        return
+
         self.rune_alert()
         self.lie_detector_alert()
 
