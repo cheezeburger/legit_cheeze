@@ -95,10 +95,10 @@ class MacroController:
         self.se_time = 0
         self.pet_feed_time = 0
         self.mana_pot_time = 0
+        self.hp_pot_time = 0
 
         # Platforms
-        self.top_plat = '39461d81'
-        self.bottom_plat = '739fdb4b'
+        self.btm_plat = '0ebcbe36'
 
         # Attacking Mode
         self.attack_direction = None
@@ -255,97 +255,91 @@ class MacroController:
         else:
             self.zero_coord_count = 0
 
-        self.rune_alert()
+        # self.rune_alert()
         self.lie_detector_alert()
 
         self.reinitialize_platform_movement()
-        self.unstuck()
+        # self.unstuck()
 
         # =========Buff Section=========
-        if not self.booster_mw_time or time.time() - self.booster_mw_time > 180:
-            print('Casting MW buff')
+        if not self.booster_mw_time or time.time() - self.booster_mw_time > 121:
+            print('Casting buff set 1')
             self.booster_mw_time = time.time()
-            self.player_manager.castSkill('pgdown', 1)
-        if not self.hs_time or time.time() - self.hs_time > 183:
-            print('Casting HS')
+            self.player_manager.castSkill('pgdown', 2)
+        if not self.hs_time or time.time() - self.hs_time > 60:
+            print('Casting buff set 2')
             self.hs_time = time.time()
-            self.player_manager.castSkill('-', 0.5, sleep_first=True)
-        if not self.adv_bless_time or time.time() - self.adv_bless_time > 185:
-            print('Casting Advance Bless')
-            self.adv_bless_time = time.time()
-            self.player_manager.castSkill('F9', 0.5, sleep_first=True)
-        if not self.si_time or time.time() - self.si_time > 187:
-            print('Casting SI')
-            self.si_time = time.time()
-            self.player_manager.castSkill('F10', 0.5, sleep_first=True)
-        if not self.se_time or time.time() - self.se_time > 189:
-            print('Casting SE')
-            self.se_time = time.time()
-            self.player_manager.castSkill(';', 0.5, sleep_first=True)
-        if not self.pet_feed_time or time.time() - self.pet_feed_time > 53:
-            print('Feeding pets')
-            self.pet_feed_time = time.time()
-            self.player_manager.castSkill('o', 0.2, sleep_first=True)
-            self.player_manager.castSkill('o', 0.2, sleep_first=True)
-        if not self.mana_pot_time or time.time() - self.mana_pot_time > 31:
-            print('Mana pot')
+            self.player_manager.castSkill('pgup', 2)
+        if not self.hp_pot_time or time.time() - self.hp_pot_time > 30:
+            print('HP Pot')
+            self.hp_pot_time = time.time()
+            self.player_manager.castSkill('end', 0.1, sleep_first=True)
+        if not self.mana_pot_time or time.time() - self.mana_pot_time > 20:
+            print('Mana Pot')
             self.mana_pot_time = time.time()
             self.player_manager.castSkill('CONTROL_L', 0.1, sleep_first=True)
-        if not self.grim_reaper_time and (
-                85 <= self.player_manager.x <= 120 and self.current_platform_hash == self.bottom_plat) or \
-                (time.time() - self.grim_reaper_time > 101) and \
-                (85 <= self.player_manager.x <= 120 and self.current_platform_hash == self.bottom_plat):
-            print('Casting grim reaper')
-            self.grim_reaper_time = time.time()
-            self.player_manager.castSkill('y', 0.5, sleep_first=True)
-
-        if not self.genesis_time and (
-                110 <= self.player_manager.x <= 163 and self.current_platform_hash == self.bottom_plat) or \
-                (time.time() - self.genesis_time > 101) and \
-                (110 <= self.player_manager.x <= 163 and self.current_platform_hash == self.bottom_plat):
-            print('Casting dark genesis')
-            self.genesis_time = time.time()
-            self.player_manager.castSkill('f', 0.5, sleep_first=True)
+        # if not self.adv_bless_time or time.time() - self.adv_bless_time > 185:
+        #     print('Casting Advance Bless')
+        #     self.adv_bless_time = time.time()
+        #     self.player_manager.castSkill('F9', 0.5, sleep_first=True)
+        # if not self.si_time or time.time() - self.si_time > 187:
+        #     print('Casting SI')
+        #     self.si_time = time.time()
+        #     self.player_manager.castSkill('F10', 0.5, sleep_first=True)
+        # if not self.se_time or time.time() - self.se_time > 189:
+        #     print('Casting SE')
+        #     self.se_time = time.time()
+        #     self.player_manager.castSkill(';', 0.5, sleep_first=True)
+        # if not self.pet_feed_time or time.time() - self.pet_feed_time > 53:
+        #     print('Feeding pets')
+        #     self.pet_feed_time = time.time()
+        #     self.player_manager.castSkill('o', 0.2, sleep_first=True)
+        #     self.player_manager.castSkill('o', 0.2, sleep_first=True)
+        # if not self.mana_pot_time or time.time() - self.mana_pot_time > 31:
+        #     print('Mana pot')
+        #     self.mana_pot_time = time.time()
+        #     self.player_manager.castSkill('CONTROL_L', 0.1, sleep_first=True)
+        # if not self.grim_reaper_time and (
+        #         85 <= self.player_manager.x <= 120 and self.current_platform_hash == self.bottom_plat) or \
+        #         (time.time() - self.grim_reaper_time > 101) and \
+        #         (85 <= self.player_manager.x <= 120 and self.current_platform_hash == self.bottom_plat):
+        #     print('Casting grim reaper')
+        #     self.grim_reaper_time = time.time()
+        #     self.player_manager.castSkill('y', 0.5, sleep_first=True)
+        #
+        # if not self.genesis_time and (
+        #         110 <= self.player_manager.x <= 163 and self.current_platform_hash == self.bottom_plat) or \
+        #         (time.time() - self.genesis_time > 101) and \
+        #         (110 <= self.player_manager.x <= 163 and self.current_platform_hash == self.bottom_plat):
+        #     print('Casting dark genesis')
+        #     self.genesis_time = time.time()
+        #     self.player_manager.castSkill('f', 0.5, sleep_first=True)
 
         # =========Attack Section=========
         """Do not proceed beyond this section if mode is not attack"""
         if self.current_action != 'attack':
             return
 
-        if (self.player_manager.x <= 45 and self.current_platform_hash == self.bottom_plat) or \
-                (self.player_manager.x >= 160 and self.current_platform_hash == self.top_plat):
-            self.release_keys()
-            self.move_down()
-            return
-
         if self.attack_direction == 'left':
-            if not self.player_manager.pressing_arrow_key:
-                self.release_keys()
-                self.player_manager.walk('left')
+            self.release_keys()
+            self.player_manager.castSkill('right', 0.1, sleep_first=True)
+        else:
+            self.release_keys()
+            self.player_manager.castSkill('left', 0.1, sleep_first=True)
+        self.player_manager.attack('v')
 
-            if self.current_platform_hash == self.bottom_plat:
-                self.attack_left()
-                if not self.hammer_time and self.current_platform_hash == self.bottom_plat or \
-                        time.time() - self.hammer_time > 13 and self.current_platform_hash == self.bottom_plat:
-                    self.release_keys()
-                    self.player_manager.backflip_attackr('v')
-                    self.hammer_time = time.time()
-                    self.release_keys()
-                return
-        elif self.attack_direction == 'right':
-            if not self.player_manager.pressing_arrow_key:
-                self.release_keys()
-                self.player_manager.walk('right')
-
-            if self.current_platform_hash == self.top_plat:
-                self.attack_right()
-                if not self.hammer_time and self.current_platform_hash == self.bottom_plat or \
-                        time.time() - self.hammer_time > 13 and self.current_platform_hash == self.bottom_plat:
-                    self.release_keys()
-                    self.player_manager.backflip_attackl('v')
-                    self.hammer_time = time.time()
-                    self.release_keys()
-                return
+        # if self.player_manager.x <= 50:
+        #     if not self.player_manager.pressing_arrow_key:
+        #         self.release_keys()
+        #         self.player_manager.castSkill('left', 0.1, sleep_first=True)
+        #
+        #     self.player_manager.attack('v')
+        # else:
+        #     if not self.player_manager.pressing_arrow_key:
+        #         self.release_keys()
+        #         self.player_manager.castSkill('right', 0.1, sleep_first=True)
+        #
+        #     self.player_manager.attack('v')
 
     def update_screen(self):
         self.screen_processor.update_image(set_focus=True)
@@ -453,25 +447,26 @@ class MacroController:
             """Don't do anything if resting"""
             return
 
-        if not self.attack_direction:
-            if self.current_platform_hash == self.bottom_plat:
-                self.attack_direction = 'left'
-            elif self.current_platform_hash == self.top_plat:
-                self.attack_direction = 'right'
-            # if self.player_manager.x <= 110:
-            #     print('Attack direction initialized to right')
-            #     self.attack_direction = 'right'
-            # else:
-            #     print('Attack direction initialized to left')
-            #     self.attack_direction = 'left'
-        if self.current_platform_hash == self.bottom_plat and self.attack_direction == 'right':
-            self.attack_direction = 'left'
-            self.release_keys()
-            return
-        if self.current_platform_hash == self.top_plat and self.attack_direction == 'left':
+        if self.player_manager.x <= 50:
             self.attack_direction = 'right'
-            self.release_keys()
-            return
+        elif self.player_manager.x >= 150:
+            self.attack_direction = 'left'
+
+        # if self.player_manager.x <= 42:
+        #     self.attack_direction = 'right'
+        #     self.release_keys()
+        # if self.player_manager.x >= 144:
+        #     self.attack_direction = 'right'
+        #     self.release_keys()
+
+        # if self.current_platform_hash == self.bottom_plat and self.attack_direction == 'right':
+        #     self.attack_direction = 'left'
+        #     self.release_keys()
+        #     return
+        # if self.current_platform_hash == self.top_plat and self.attack_direction == 'left':
+        #     self.attack_direction = 'right'
+        #     self.release_keys()
+        #     return
         # """
         # ~1% chance to randomize moves
         # """

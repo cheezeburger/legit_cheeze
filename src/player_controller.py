@@ -504,7 +504,6 @@ class PlayerController:
     def walk(self, direction):
         self.pressing_arrow_key = True
         self.key_mgr._direct_press(self.getKey(direction))
-        time.sleep(0.1)
 
     def tele_attack(self):
         self.key_mgr._direct_press(DIK_D)
@@ -515,6 +514,12 @@ class PlayerController:
         self.key_mgr._direct_release(DIK_X)
         self.key_mgr._direct_release(DIK_D)
 
+    def hold_attack(self, key):
+        self.key_mgr._direct_press(self.getKey(key))
+
+    def attack(self, key):
+        self.key_mgr._direct_press(self.getKey(key))
+        time.sleep(abs(0.05 + self.random_duration(0.1)))
     # ==================================
     def telecast(self):
         # self.key_mgr._direct_press(DIK_G)
