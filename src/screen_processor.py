@@ -306,7 +306,7 @@ class StaticImageProcessor:
 
         return 0
 
-    def find_lie_detector_5(self):
+    # def find_lie_detector_5(self):
         # img_rgb = self.img_handle.screen_capture(800, 600, save=False)
         # img_rgb = cv2.imread('./lie_detector/ld_sample3.png')
         #
