@@ -293,7 +293,7 @@ class MacroController:
 
         if get_current_platform == '764feb49':
             print('Moving up')
-            self.player_manager.teleu()
+            self.player_manager.teleju()
         if 69 <= self.player_manager.x < 77 and get_current_platform == '9540508d':
             while True:
                 print('Going away from portal')
