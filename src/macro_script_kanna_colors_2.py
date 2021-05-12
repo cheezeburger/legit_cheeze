@@ -324,9 +324,9 @@ class MacroController:
                     if not 69 <= self.player_manager.x < 77:
                         break
 
-                self.player_manager.teleu()
+                self.player_manager.teleju()
                 return
-            self.player_manager.teleu()
+            self.player_manager.teleju()
 
         elif (get_current_platform == '9540508d') and (self.player_manager.x >= 80):
             print('Moving left attack')
