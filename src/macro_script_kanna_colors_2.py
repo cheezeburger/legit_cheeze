@@ -95,6 +95,8 @@ class MacroController:
 
         self.direction_change_time = 0
 
+        self.rune_alert_time = None
+
     def load_and_process_platform_map(self, path="mapdata.platform"):
         retval = self.terrain_analyzer.load(path)
         self.terrain_analyzer.generate_solution_dict()
