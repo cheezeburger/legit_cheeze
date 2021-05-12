@@ -519,7 +519,7 @@ class PlayerController:
 
     def attack(self, key):
         self.key_mgr._direct_press(self.getKey(key))
-        time.sleep(abs(0.05 + self.random_duration(0.1)))
+        time.sleep(0.05)
     # ==================================
     def telecast(self):
         # self.key_mgr._direct_press(DIK_G)
