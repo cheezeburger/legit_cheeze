@@ -435,11 +435,11 @@ class PlayerController:
         self.key_mgr._direct_release(self.getKey(key))
 
     def castKishin(self):
-        time.sleep(1.5)
+        time.sleep(1)
         self.key_mgr._direct_press(DIK_F)
         time.sleep(0.1)
         self.key_mgr._direct_press(DIK_F)
-        time.sleep(0.4)
+        time.sleep(0.1)
         self.key_mgr._direct_release(DIK_F)
 
     def castHaku(self):
@@ -457,41 +457,36 @@ class PlayerController:
         self.key_mgr._direct_press(DIK_H)
         time.sleep(0.2)
         self.key_mgr._direct_release(DIK_H)
-        time.sleep(1)
 
     def castBigBoss(self):
         self.key_mgr._direct_press(DIK_L)
         time.sleep(0.2)
         self.key_mgr._direct_release(DIK_L)
-        time.sleep(1)
+        time.sleep(0.2)
 
     def castYoungYasha(self):
-        time.sleep(2)
-        self.key_mgr._direct_press(DIK_G)
         time.sleep(0.2)
+        self.key_mgr._direct_press(DIK_G)
+        time.sleep(0.05)
         self.key_mgr._direct_release(DIK_G)
-        time.sleep(2)
 
     def castYuki(self):
-        time.sleep(2)
-        self.key_mgr._direct_press(DIK_5)
         time.sleep(0.2)
+        self.key_mgr._direct_press(DIK_5)
+        time.sleep(0.05)
         self.key_mgr._direct_release(DIK_5)
-        time.sleep(1)
 
     def castHs(self):
-        time.sleep(1)
+        time.sleep(0.5)
         self.key_mgr._direct_press(DIK_Y)
-        time.sleep(0.2)
+        time.sleep(0.05)
         self.key_mgr._direct_release(DIK_Y)
-        time.sleep(2)
 
     def castSi(self):
-        time.sleep(1)
+        time.sleep(0.5)
         self.key_mgr._direct_press(DIK_U)
-        time.sleep(0.2)
+        time.sleep(0.05)
         self.key_mgr._direct_release(DIK_5)
-        time.sleep(1)
 
     def feedPet(self):
         self.key_mgr._direct_press(DIK_LCTRL)
@@ -499,7 +494,6 @@ class PlayerController:
         self.key_mgr._direct_press(DIK_LCTRL)
         time.sleep(0.2)
         self.key_mgr._direct_release(DIK_LCTRL)
-        time.sleep(1)
     #==================================
     def walk(self, direction):
         self.pressing_arrow_key = True
