@@ -454,8 +454,10 @@ class MacroController:
 
         if self.player_manager.x <= 50:
             self.attack_direction = 'right'
+            self.release_keys()
         elif self.player_manager.x >= 150:
             self.attack_direction = 'left'
+            self.release_keys()
 
         # if self.player_manager.x <= 42:
         #     self.attack_direction = 'right'
