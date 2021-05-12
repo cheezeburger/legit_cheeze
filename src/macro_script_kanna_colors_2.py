@@ -165,9 +165,9 @@ class MacroController:
             if rune_platform_hash:
                 return rune_platform_hash, rune_coords
             else:
-                return 0, 0
+                return None
         else:
-            return 0, 0
+            return None
 
     def navigate_to_rune_platform(self):
         """
