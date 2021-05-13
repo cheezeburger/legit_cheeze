@@ -94,7 +94,6 @@ class MacroController:
         self.pet_feed_time = 0
 
         self.direction_change_time = 0
-        self.rune_alert_time = 0
 
     def load_and_process_platform_map(self, path="mapdata.platform"):
         retval = self.terrain_analyzer.load(path)
@@ -229,9 +228,6 @@ class MacroController:
 
         self.current_platform_hash = None
         get_current_platform = self.find_current_platform()
-
-        # self.rune_alert()
-        # self.lie_detector_alert()
 
         # Initial Buffs
         if not self.direction_change_time:
@@ -398,19 +394,3 @@ class MacroController:
         self.logger.debug("aborted")
         if self.log_queue:
             self.log_queue.put(["stopped", None])
-
-    def rune_alert(self):
-        if self.find_rune_platform():
-            if self.rune_alert_time <= 0:
-                self.rune_alert_time = time.time()
-                self.screen_processor.play_rune_alert()
-                return
-
-            if round(time.time() - self.rune_alert_time) % 5 == 0:
-                self.screen_processor.play_rune_alert()
-                return
-        else:
-            self.rune_alert_time = 0
-
-    def lie_detector_alert(self):
-        self.screen_processor.find_violetta()
