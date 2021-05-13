@@ -230,8 +230,8 @@ class MacroController:
         self.current_platform_hash = None
         get_current_platform = self.find_current_platform()
 
-        self.rune_alert()
-        self.lie_detector_alert()
+        # self.rune_alert()
+        # self.lie_detector_alert()
 
         # Initial Buffs
         if not self.direction_change_time:
