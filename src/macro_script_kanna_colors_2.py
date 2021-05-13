@@ -94,7 +94,6 @@ class MacroController:
         self.pet_feed_time = 0
 
         self.direction_change_time = 0
-
         self.rune_alert_time = 0
 
     def load_and_process_platform_map(self, path="mapdata.platform"):
@@ -165,9 +164,9 @@ class MacroController:
             if rune_platform_hash:
                 return rune_platform_hash, rune_coords
             else:
-                return None
+                return 0, 0
         else:
-            return None
+            return 0, 0
 
     def navigate_to_rune_platform(self):
         """
@@ -293,7 +292,7 @@ class MacroController:
 
         if get_current_platform == '764feb49':
             print('Moving up')
-            self.player_manager.teleju()
+            self.player_manager.teleu()
         if 69 <= self.player_manager.x < 77 and get_current_platform == '9540508d':
             while True:
                 print('Going away from portal')
@@ -324,9 +323,9 @@ class MacroController:
                     if not 69 <= self.player_manager.x < 77:
                         break
 
-                self.player_manager.teleju()
+                self.player_manager.teleu()
                 return
-            self.player_manager.teleju()
+            self.player_manager.teleu()
 
         elif (get_current_platform == '9540508d') and (self.player_manager.x >= 80):
             print('Moving left attack')
@@ -369,22 +368,6 @@ class MacroController:
         # self.loop_count += 1
         # return 0
 
-    def rune_alert(self):
-        if self.find_rune_platform():
-            if self.rune_alert_time <= 0:
-                self.rune_alert_time = time.time()
-                self.screen_processor.play_rune_alert()
-                return
-
-            if round(time.time() - self.rune_alert_time) % 5 == 0:
-                self.screen_processor.play_rune_alert()
-                return
-        else:
-            self.rune_alert_time = 0
-
-    def lie_detector_alert(self):
-        self.screen_processor.find_violetta()
-
     def update_screen(self):
         self.screen_processor.update_image(set_focus=True)
         # Update Constants
@@ -415,3 +398,19 @@ class MacroController:
         self.logger.debug("aborted")
         if self.log_queue:
             self.log_queue.put(["stopped", None])
+
+    def rune_alert(self):
+        if self.find_rune_platform():
+            if self.rune_alert_time <= 0:
+                self.rune_alert_time = time.time()
+                self.screen_processor.play_rune_alert()
+                return
+
+            if round(time.time() - self.rune_alert_time) % 5 == 0:
+                self.screen_processor.play_rune_alert()
+                return
+        else:
+            self.rune_alert_time = 0
+
+    def lie_detector_alert(self):
+        self.screen_processor.find_violetta()
