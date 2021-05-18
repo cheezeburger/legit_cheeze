@@ -313,7 +313,7 @@ class MacroController:
             self.genesis_time = time.time()
             self.player_manager.castSkill('f', 0.5, sleep_first=True)
         if not self.altar_time or time.time() - self.altar_time > 45 and \
-                (self.attack_direction == 'left' and self.player_manager.x >= 121 or \
+                (self.attack_direction == 'left' and 121 <= self.player_manager.x <= 154 or \
                  self.attack_direction == 'right' and 54 <= self.player_manager.x <= 121):
             print('Spawning altar')
             self.altar_time = time.time()
