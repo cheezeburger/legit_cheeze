@@ -324,7 +324,8 @@ class MacroController:
                 self.player_manager.walk('left')
 
             if self.current_platform_hash == self.bottom_plat:
-                self.attack_left()
+                # self.attack_left()
+                self.player_manager.telecast()
                 if not self.hammer_time and self.current_platform_hash == self.bottom_plat or \
                         time.time() - self.hammer_time > 13 and self.current_platform_hash == self.bottom_plat:
                     self.release_keys()

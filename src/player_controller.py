@@ -495,6 +495,66 @@ class PlayerController:
         self.key_mgr._direct_press(DIK_LCTRL)
         time.sleep(0.2)
         self.key_mgr._direct_release(DIK_LCTRL)
+
+    #===Advance movement===============================
+    def a_walk(self, direction):
+        if self.pressing_arrow_key:
+            if direction == 'left':
+                print('left')
+                self.key_mgr._direct_press(DIK_LEFT)
+                self.key_mgr._direct_release(DIK_RIGHT)
+            else:
+                print('right')
+                self.key_mgr._direct_press(DIK_RIGHT)
+                self.key_mgr._direct_release(DIK_LEFT)
+        else:
+            print(direction)
+            self.key_mgr._direct_press(self.getKey(direction))
+
+        self.pressing_arrow_key = True
+        self.key_mgr._direct_press(self.getKey(direction))
+
+    def a_attack(self, key):
+        self.key_mgr._direct_press(self.getKey(key))
+        time.sleep(self.rand_dec(140, 240))
+
+    def a_tele_attack(self, key):
+        attack_counts = random.randint(1, 2)
+        teleport_counts = random.randint(1, 2)
+
+        for x in range(teleport_counts):
+            self.key_mgr._direct_press(DIK_D)
+            time.sleep(self.rand_dec(2, 3))
+
+
+        for x in range(attack_counts):
+            self.key_mgr._direct_press(self.getKey(key))
+            time.sleep(self.rand_dec(2, 3))
+
+    def a_telecast(self):
+        glide_count = random.randint(1, 1)
+        attack_counts = random.randint(1, 3)
+        teleport_counts = random.randint(1, 3)
+
+        for x in range(glide_count):
+            self.key_mgr._direct_press(DIK_G)
+            time.sleep(self.rand_dec(1, 2))
+            # if x == range(glide_count)[-1]:
+            #     time.sleep(self.rand_dec(2, 5))
+            #
+            # else:
+            #     time.sleep(self.rand_dec(7, 14))
+
+
+        for x in range(attack_counts):
+            self.key_mgr._direct_press(DIK_X)
+            time.sleep(self.rand_dec(2, 5))
+
+        for x in range(teleport_counts):
+            self.key_mgr._direct_press(DIK_D)
+
+            time.sleep(self.rand_dec(2, 4))
+
     #==================================
     def walk(self, direction):
         self.pressing_arrow_key = True
@@ -517,22 +577,6 @@ class PlayerController:
         time.sleep(0.05)
     # ==================================
     def telecast(self):
-        # self.key_mgr._direct_press(DIK_G)
-        # time.sleep(0.05)
-        # self.key_mgr._direct_release(DIK_G)
-        #
-        # self.key_mgr._direct_press(DIK_X)
-        # time.sleep(0.1)
-        # self.key_mgr._direct_release(DIK_X)
-        #
-        # self.key_mgr._direct_press(DIK_D)
-        # time.sleep(0.1)
-        #
-        # self.key_mgr._direct_press(DIK_X)
-        # time.sleep(0.05)
-        # self.key_mgr._direct_release(DIK_X)
-        # self.key_mgr._direct_release(DIK_D)
-
         self.key_mgr._direct_press(DIK_G)
         time.sleep(abs(0.05 + self.random_duration(0.1)))
         self.key_mgr._direct_press(DIK_X)
@@ -817,6 +861,12 @@ class PlayerController:
         self.key_mgr._direct_release(self.jump_key)
         self.key_mgr._direct_release(DIK_C)
 
+    def spawn_altar(self):
+        self.key_mgr._direct_press(DIK_DOWN)
+        time.sleep(self.rand_dec(20, 50))
+        self.key_mgr._direct_press(DIK_C)
+        time.sleep(self.rand_dec(20, 50))
+
     def dbljump_max(self):
         """Warining: is a blocking call"""
         self.key_mgr._direct_press(self.jump_key)
@@ -932,11 +982,11 @@ class PlayerController:
     def drop(self):
         """Blocking call"""
         self.key_mgr._direct_press(DIK_DOWN)
-        time.sleep(abs(0.1 + self.random_duration()))
+        time.sleep(0.1)
         self.key_mgr._direct_press(self.jump_key)
-        time.sleep(abs(0.1 + self.random_duration()))
+        time.sleep(0.1)
         self.key_mgr._direct_release(DIK_DOWN)
-        time.sleep(abs(0.1 + self.random_duration()))
+        time.sleep(0.1)
         self.key_mgr._direct_release(self.jump_key)
 
     def random_duration(self, gen_range=0.1, digits=2):
@@ -950,6 +1000,13 @@ class PlayerController:
         if random.choice([1, -1]) == -1:
             d *= -1
         return d
+
+    def rand_dec(self, start, end):
+        r1 = start / 100
+        r2 = end / 100
+        rand = round(random.uniform(r1, r2), 3)
+
+        return rand
 
     def getKey(self, key):
         getKey = {  # tkinter event keysym to dik key code coversion table
