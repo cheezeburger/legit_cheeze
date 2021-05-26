@@ -777,19 +777,19 @@ class PlayerController:
         self.key_mgr._direct_press(self.jump_key)
         time.sleep(0.1)
 
-        flip_right_attack_chance = random.randint(0, 100)
-
-        if flip_right_attack_chance <= 20:
-            print('Casting chance attack (attack opposite direction)')
-            self.key_mgr._direct_release(DIK_LEFT)
-            time.sleep(0.1)
-            self.key_mgr._direct_press(DIK_RIGHT)
-            time.sleep(0.1)
-            self.key_mgr._direct_press(DIK_X)
-            time.sleep(0.1)
-            self.key_mgr._direct_release(DIK_RIGHT)
-            self.key_mgr._direct_press(DIK_LEFT)
-            self.pressing_arrow_key = False
+        # flip_right_attack_chance = random.randint(0, 100)
+        #
+        # if flip_right_attack_chance <= 20:
+        #     print('Casting chance attack (attack opposite direction)')
+        #     self.key_mgr._direct_release(DIK_LEFT)
+        #     time.sleep(0.1)
+        #     self.key_mgr._direct_press(DIK_RIGHT)
+        #     time.sleep(0.1)
+        #     self.key_mgr._direct_press(DIK_X)
+        #     time.sleep(0.1)
+        #     self.key_mgr._direct_release(DIK_RIGHT)
+        #     self.key_mgr._direct_press(DIK_LEFT)
+        #     self.pressing_arrow_key = False
 
         self.key_mgr._direct_press(DIK_X)
         self.key_mgr._direct_release(DIK_X)
@@ -814,18 +814,18 @@ class PlayerController:
         self.key_mgr._direct_press(self.jump_key)
         time.sleep(abs(0.1 + self.random_duration(0.1)))
 
-        flip_right_attack_chance = random.randint(0, 100)
-
-        if flip_right_attack_chance <= 20:
-            print('Casting chance attack (attack opposite direction)')
-            self.key_mgr._direct_release(DIK_RIGHT)
-            time.sleep(0.1)
-            self.key_mgr._direct_press(DIK_LEFT)
-            time.sleep(0.1)
-            self.key_mgr._direct_press(DIK_X)
-            time.sleep(0.1)
-            self.key_mgr._direct_release(DIK_LEFT)
-            self.key_mgr._direct_press(DIK_RIGHT)
+        # flip_right_attack_chance = random.randint(0, 100)
+        #
+        # if flip_right_attack_chance <= 20:
+        #     print('Casting chance attack (attack opposite direction)')
+        #     self.key_mgr._direct_release(DIK_RIGHT)
+        #     time.sleep(0.1)
+        #     self.key_mgr._direct_press(DIK_LEFT)
+        #     time.sleep(0.1)
+        #     self.key_mgr._direct_press(DIK_X)
+        #     time.sleep(0.1)
+        #     self.key_mgr._direct_release(DIK_LEFT)
+        #     self.key_mgr._direct_press(DIK_RIGHT)
             # self.pressing_arrow_key = False
 
         self.key_mgr._direct_press(DIK_X)

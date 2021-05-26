@@ -91,6 +91,7 @@ class MacroController:
         self.yuki_time = 0
         self.hs_time = 0
         self.si_time = 0
+        self.ab_time = 0
         self.pet_feed_time = 0
 
         self.direction_change_time = 0
@@ -265,6 +266,10 @@ class MacroController:
             print('Casting HS')
             self.hs_time = time.time()
             self.player_manager.castHs()
+        if not self.ab_time or time.time() - self.ab_time > 189:
+            print('Casting AB')
+            self.ab_time = time.time()
+            self.player_manager.castSkill('F9', 1)
         if not self.si_time or time.time() - self.si_time > 187:
             print('Casting SI')
             self.si_time = time.time()
